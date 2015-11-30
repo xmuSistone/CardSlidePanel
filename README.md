@@ -3,7 +3,7 @@ child-views can be slided to the horizontal edge of the screen and reborn withou
 
 <br>
 ### 序言
-* 
+```xml
 	* 这是一件严肃的事情
 	* 有一个技术讨论的QQ群，里面活跃着一群技术牛人。<br>
 	* 他们编码一流，飞天遁地，无所不能。<br>
@@ -19,7 +19,7 @@ child-views can be slided to the horizontal edge of the screen and reborn withou
 	* 时过境迁，“探探”摆在眼前，我知道ViewDragHelper到底能有多牛逼了。<br>
 	* 终于，我下定了决心要做好这个project。<br>
 	* 请看图：<br>
-	
+```	
 
 <td>
 	 <img src="capture01.gif" width="300" height="500" />
