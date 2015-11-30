@@ -2,7 +2,9 @@
 child-views can be slided to the horizontal edge of the screen and reborn without creating new views
 
 <br>
-* 这是一件严肃的事情
+### 序言
+* 
+	* 这是一件严肃的事情
 	* 有一个技术讨论的QQ群，里面活跃着一群技术牛人。<br>
 	* 他们编码一流，飞天遁地，无所不能。<br>
 	* 他们知道你所不知的技术，玩过你没有玩过的App。<br>
