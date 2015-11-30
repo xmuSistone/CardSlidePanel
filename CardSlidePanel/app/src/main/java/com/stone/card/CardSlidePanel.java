@@ -5,39 +5,42 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * 这只是一个容器，只是处理了child的左右滑动而已
+ * 卡片滑动面板，主要逻辑实现类
  *
  * @author xmuSistone
  */
 @SuppressLint({"HandlerLeak", "NewApi", "ClickableViewAccessibility"})
 public class CardSlidePanel extends ViewGroup {
-    private List<CardItemView> viewList = new ArrayList<CardItemView>();
-    private List<View> releasedViewList = new ArrayList<View>();
+    private List<CardItemView> viewList = new ArrayList<CardItemView>(); // 存放的是每一层的view，从顶到底
+    private List<View> releasedViewList = new ArrayList<View>(); // 手指松开后存放的view列表
 
     /* 拖拽工具类 */
-    private final ViewDragHelper mDragHelper;
-    private int initCenterViewX = 0, initCenterViewY = 0; // 最初时，中间View的x位置
-    private int allWidth = 0; // view的宽度
-    private int allHeight = 0; // view的高度
-    private int childWith = 0;
+    private final ViewDragHelper mDragHelper; // 这个跟原生的ViewDragHelper差不多，我仅仅只是修改了Interpolator
+    private int initCenterViewX = 0, initCenterViewY = 0; // 最初时，中间View的x位置,y位置
+    private int allWidth = 0; // 面板的宽度
+    private int allHeight = 0; // 面板的高度
+    private int childWith = 0; // 每一个子View对应的宽度
+    private int screenWidth = 0;
 
-    private static final int OFFSET_STEP = 40;
-    private static final float SCALE_STEP = 0.08f;
+    private static final float SCALE_STEP = 0.08f; // view叠加缩放的步长
     private static final int MAX_SLIDE_DISTANCE_LINKAGE = 400; // 水平距离+垂直距离
     // 超过这个值
     // 则下一层view完成向上一层view的过渡
-    private View bottomLayout;
+    private View bottomLayout; // 卡片下边的三个按钮布局
 
-    private int panelMarginTop = 40;
     private int bottomMarginTop = 40;
+    private int yOffsetStep = 40; // view叠加垂直偏移量的步长
+
 
     private static final int X_VEL_THRESHOLD = 900;
     private static final int X_DISTANCE_THRESHOLD = 300;
@@ -58,10 +61,16 @@ public class CardSlidePanel extends ViewGroup {
 
     public CardSlidePanel(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.card);
+
+        bottomMarginTop = (int) a.getDimension(R.styleable.card_bottomMarginTop, bottomMarginTop);
+        yOffsetStep = (int) a.getDimension(R.styleable.card_yOffsetStep, yOffsetStep);
         // 滑动相关类
         mDragHelper = ViewDragHelper
                 .create(this, 10f, new DragHelperCallback());
         mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
+        a.recycle();
     }
 
     class XScrollDetector extends SimpleOnGestureListener {
@@ -74,6 +83,7 @@ public class CardSlidePanel extends ViewGroup {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         viewList.clear();
         int num = getChildCount();
         for (int i = num - 1; i >= 0; i--) {
@@ -165,7 +175,7 @@ public class CardSlidePanel extends ViewGroup {
             changedView.offsetLeftAndRight(initCenterViewX
                     - changedView.getLeft());
             changedView.offsetTopAndBottom(initCenterViewY
-                    - changedView.getTop() + OFFSET_STEP * 2);
+                    - changedView.getTop() + yOffsetStep * 2);
             float scale = 1.0f - SCALE_STEP * 2;
             changedView.setScaleX(scale);
             changedView.setScaleY(scale);
@@ -227,10 +237,10 @@ public class CardSlidePanel extends ViewGroup {
     // 由index对应view变成index-1对应的view
     private void ajustLinkageViewItem(View changedView, float rate, int index) {
         int changeIndex = viewList.indexOf(changedView);
-        int initPosY = OFFSET_STEP * index;
+        int initPosY = yOffsetStep * index;
         float initScale = 1 - SCALE_STEP * index;
 
-        int nextPosY = OFFSET_STEP * (index - 1);
+        int nextPosY = yOffsetStep * (index - 1);
         float nextScale = 1 - SCALE_STEP * (index - 1);
 
         int offset = (int) (initPosY + (nextPosY - initPosY) * rate);
@@ -328,8 +338,8 @@ public class CardSlidePanel extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.d("LeiTest", "measuredWidth=" + getMeasuredWidth());
         measureChildren(widthMeasureSpec, heightMeasureSpec);
-
         int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
         int maxHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(
@@ -349,17 +359,14 @@ public class CardSlidePanel extends ViewGroup {
 
             int childWidth = viewItem.getMeasuredWidth();
             int childHeight = viewItem.getMeasuredHeight();
-            int marginHorizontal = (right - left - childWidth) / 2;
 
-            viewItem.layout(left + marginHorizontal, top + panelMarginTop,
-                    right - marginHorizontal, top + panelMarginTop
-                            + childHeight);
+            viewItem.layout(left, top, right, top + childHeight);
 
-            int offset = OFFSET_STEP * i;
+            int offset = yOffsetStep * i;
             float scale = 1 - SCALE_STEP * i;
             if (i > 2) {
                 // 备用的view
-                offset = OFFSET_STEP * 2;
+                offset = yOffsetStep * 2;
                 scale = 1 - SCALE_STEP * 2;
             }
 
@@ -369,8 +376,7 @@ public class CardSlidePanel extends ViewGroup {
         }
 
         if (null != bottomLayout) {
-            int layoutTop = viewList.get(0).getMeasuredHeight()
-                    + panelMarginTop + bottomMarginTop;
+            int layoutTop = viewList.get(0).getMeasuredHeight() + bottomMarginTop;
             bottomLayout.layout(left, layoutTop, right, layoutTop
                     + bottomLayout.getMeasuredHeight());
         }
@@ -406,6 +412,11 @@ public class CardSlidePanel extends ViewGroup {
         return result | (childMeasuredState & MEASURED_STATE_MASK);
     }
 
+    /**
+     * 本来想写成Adapter适配，想想还是算了，这种比较简单
+     *
+     * @param dataList 数据
+     */
     public void fillData(List<CardDataItem> dataList) {
         this.dataList = dataList;
 
@@ -419,10 +430,6 @@ public class CardSlidePanel extends ViewGroup {
         if (null != cardSwitchListener) {
             cardSwitchListener.onShow(0);
         }
-    }
-
-    public CardSwitchListener getCardSwitchListener() {
-        return cardSwitchListener;
     }
 
     public void setCardSwitchListener(CardSwitchListener cardSwitchListener) {

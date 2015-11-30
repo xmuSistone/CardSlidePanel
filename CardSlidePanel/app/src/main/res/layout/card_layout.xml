@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card="http://schemas.android.com/apk/res/com.stone.card"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
@@ -21,6 +22,8 @@
         <com.stone.card.CardSlidePanel
             android:id="@+id/image_slide_panel"
             android:layout_width="fill_parent"
+            card:bottomMarginTop="40dp"
+            card:yOffsetStep="22dp"
             android:layout_height="fill_parent" >
 
             <LinearLayout

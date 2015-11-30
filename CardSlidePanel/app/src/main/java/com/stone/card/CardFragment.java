@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.stone.card.CardSlidePanel.CardSwitchListener;
 
 /**
- * 按照初叶的使用习惯，每一页应该是一个模板，所以此处命名时使用了Template关键字
+ * 卡片Fragment
  *
  * @author xmuSistone
  */
