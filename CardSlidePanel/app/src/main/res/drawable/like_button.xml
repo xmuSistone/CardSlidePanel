@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/like_pressed" android:state_focused="true" android:state_pressed="true"/>
+    <!-- 触摸模式下单击时的背景图片 -->
+    <item android:drawable="@drawable/like_pressed" android:state_focused="false" android:state_pressed="true"/>
+    <!-- 选中时的图片背景 -->
+    <item android:drawable="@drawable/like_pressed" android:state_selected="true"/>
+    <!-- 获得焦点时的图片背景 -->
+    <item android:drawable="@drawable/like_pressed" android:state_focused="true"/>
+    <item android:drawable="@drawable/like_normal"/>
+
+</selector>

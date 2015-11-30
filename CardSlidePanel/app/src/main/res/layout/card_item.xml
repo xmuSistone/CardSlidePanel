@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <ImageView
+            android:id="@+id/card_image_view"
+            android:layout_width="320dp"
+            android:layout_height="260dp"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/card_pic_num"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="#5f000000"
+            android:drawableLeft="@drawable/card_photot"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:paddingLeft="6dp"
+            android:paddingRight="4dp"
+            android:text="6"
+            android:textColor="#fff" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/back_shape"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/card_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="叶琪琪 23"
+                android:textColor="#111"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/card_other_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:gravity="center_horizontal"
+                android:text="其它 6km"
+                android:textColor="#888" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/card_left1"
+                android:drawablePadding="2dp"
+                android:gravity="center_horizontal"
+                android:text="0"
+                android:textColor="#999"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/card_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:drawableLeft="@drawable/card_left2"
+                android:drawablePadding="2dp"
+                android:gravity="center_horizontal"
+                android:text="2"
+                android:textColor="#999"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
