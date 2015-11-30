@@ -47,9 +47,9 @@ public class CardSlidePanel extends ViewGroup {
 
     private Object obj1 = new Object();
 
-    private CardSwitchListener cardSwitchListener;
-    private List<CardDataItem> dataList;
-    private int isShowing = 0;
+    private CardSwitchListener cardSwitchListener; // 回调接口
+    private List<CardDataItem> dataList; // 存储的数据链表
+    private int isShowing = 0; // 当前正在显示的小项
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -84,6 +84,8 @@ public class CardSlidePanel extends ViewGroup {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        // 渲染完成，初始化卡片view列表
         viewList.clear();
         int num = getChildCount();
         for (int i = num - 1; i >= 0; i--) {
@@ -99,13 +101,14 @@ public class CardSlidePanel extends ViewGroup {
     }
 
     /**
-     * 这是文件夹拖拽效果的主要逻辑
+     * 这是viewdraghelper拖拽效果的主要逻辑
      */
     private class DragHelperCallback extends ViewDragHelper.Callback {
 
         @Override
         public void onViewPositionChanged(View changedView, int left, int top,
                                           int dx, int dy) {
+            // 调用offsetLeftAndRight导致viewPosition改变，会调到此处，所以此处对index做保护处理
             int index = viewList.indexOf(changedView);
             if (index + 2 > viewList.size()) {
                 return;
@@ -251,7 +254,6 @@ public class CardSlidePanel extends ViewGroup {
                 + initCenterViewY);
         ajustView.setScaleX(scale);
         ajustView.setScaleY(scale);
-        invalidate();
     }
 
     /**
@@ -263,12 +265,13 @@ public class CardSlidePanel extends ViewGroup {
         int finalX = initCenterViewX;
         int finalY = initCenterViewY;
 
+        // 下面这一坨计算finalX和finalY，要读懂代码需要建立一个比较清晰的数学模型才能理解，不信拉倒
         int dx = changedView.getLeft() - initCenterViewX;
         int dy = changedView.getTop() - initCenterViewY;
         if (dx == 0) {
+            // 由于dx作为分母，此处保护处理
             dx = 1;
         }
-
         if (xvel > X_VEL_THRESHOLD || dx > X_DISTANCE_THRESHOLD) {
             finalX = allWidth;
             finalY = dy * (childWith + initCenterViewX) / dx + initCenterViewY;
@@ -278,12 +281,15 @@ public class CardSlidePanel extends ViewGroup {
                     + initCenterViewY;
         }
 
+
+        // 如果斜率太高，就折中处理
         if (finalY > allHeight) {
             finalY = allHeight;
         } else if (finalY < -allHeight / 2) {
             finalY = -allHeight / 2;
         }
 
+        // 如果没有飞向两侧，而是回到了中间，需要谨慎处理
         if (finalX != initCenterViewX) {
             releasedViewList.add(changedView);
         }
@@ -300,6 +306,7 @@ public class CardSlidePanel extends ViewGroup {
         if (mDragHelper.continueSettling(true)) {
             ViewCompat.postInvalidateOnAnimation(this);
         } else {
+            // 动画结束
             if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
                 orderViewStack();
             }
@@ -338,7 +345,6 @@ public class CardSlidePanel extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Log.d("LeiTest", "measuredWidth=" + getMeasuredWidth());
         measureChildren(widthMeasureSpec, heightMeasureSpec);
         int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
         int maxHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -353,15 +359,12 @@ public class CardSlidePanel extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right,
                             int bottom) {
+        // 布局卡片view
         int size = viewList.size();
         for (int i = 0; i < size; i++) {
             View viewItem = viewList.get(i);
-
-            int childWidth = viewItem.getMeasuredWidth();
             int childHeight = viewItem.getMeasuredHeight();
-
             viewItem.layout(left, top, right, top + childHeight);
-
             int offset = yOffsetStep * i;
             float scale = 1 - SCALE_STEP * i;
             if (i > 2) {
@@ -375,12 +378,14 @@ public class CardSlidePanel extends ViewGroup {
             viewItem.setScaleY(scale);
         }
 
+        // 布局底部按钮的View
         if (null != bottomLayout) {
             int layoutTop = viewList.get(0).getMeasuredHeight() + bottomMarginTop;
             bottomLayout.layout(left, layoutTop, right, layoutTop
                     + bottomLayout.getMeasuredHeight());
         }
 
+        // 初始化一些中间参数
         initCenterViewX = viewList.get(0).getLeft();
         initCenterViewY = viewList.get(0).getTop();
         childWith = viewList.get(0).getMeasuredWidth();
