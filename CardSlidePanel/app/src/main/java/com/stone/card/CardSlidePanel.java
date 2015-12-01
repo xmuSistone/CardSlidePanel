@@ -53,6 +53,7 @@ public class CardSlidePanel extends ViewGroup {
     private List<CardDataItem> dataList; // 存储的数据链表
     private int isShowing = 0; // 当前正在显示的小项
     private View leftBtn, rightBtn;
+    private long lastClickTime = 0;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -112,12 +113,20 @@ public class CardSlidePanel extends ViewGroup {
 
             @Override
             public void onClick(View view) {
+                // 避免频繁调用
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClickTime < 800) {
+                    return;
+                }
+                lastClickTime = currentTime;
+
                 int type = -1;
                 if (view == leftBtn) {
                     type = VANISH_TYPE_LEFT;
                 } else if (view == rightBtn) {
                     type = VANISH_TYPE_RIGHT;
                 }
+
                 vanishOnBtnClick(type);
             }
         };
@@ -343,6 +352,11 @@ public class CardSlidePanel extends ViewGroup {
      * 点击按钮消失动画
      */
     private void vanishOnBtnClick(int type) {
+        View animateView = viewList.get(0);
+        if (animateView.getVisibility() != View.VISIBLE) {
+            return;
+        }
+
         int finalX = 0;
         if (type == VANISH_TYPE_LEFT) {
             finalX = -childWith;
@@ -351,7 +365,6 @@ public class CardSlidePanel extends ViewGroup {
         }
 
         if (finalX != 0) {
-            View animateView = viewList.get(0);
             releasedViewList.add(animateView);
             if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight)) {
                 ViewCompat.postInvalidateOnAnimation(this);
