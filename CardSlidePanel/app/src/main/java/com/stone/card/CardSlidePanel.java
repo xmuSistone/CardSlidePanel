@@ -45,6 +45,9 @@ public class CardSlidePanel extends ViewGroup {
     private static final int X_VEL_THRESHOLD = 900;
     private static final int X_DISTANCE_THRESHOLD = 300;
 
+    public static final int VANISH_TYPE_LEFT = 0;
+    public static final int VANISH_TYPE_RIGHT = 1;
+
     private Object obj1 = new Object();
 
     private CardSwitchListener cardSwitchListener; // 回调接口
@@ -174,7 +177,7 @@ public class CardSlidePanel extends ViewGroup {
                 return;
             }
 
-            // 1. 顶部View的位置重置
+            // 1. 消失的卡片View位置重置
             changedView.offsetLeftAndRight(initCenterViewX
                     - changedView.getLeft());
             changedView.offsetTopAndBottom(initCenterViewY
@@ -183,15 +186,15 @@ public class CardSlidePanel extends ViewGroup {
             changedView.setScaleX(scale);
             changedView.setScaleY(scale);
 
-            // 2. viewList中的view在ViewGroup顺次调整
+            // 2. 卡片View在ViewGroup中的顺次调整
             int num = viewList.size();
             for (int i = num - 1; i > 0; i--) {
                 View tempView = viewList.get(i);
                 tempView.bringToFront();
             }
 
-            // 3. changedView设置新数据
-            int newIndex = isShowing + 5;
+            // 3. changedView填充新数据
+            int newIndex = isShowing + 4;
             if (newIndex < dataList.size()) {
                 CardDataItem dataItem = dataList.get(newIndex);
                 changedView.fillData(dataItem);
@@ -199,20 +202,26 @@ public class CardSlidePanel extends ViewGroup {
                 changedView.setVisibility(View.INVISIBLE);
             }
 
-            // 3. lastView交接
+            // 4. viewList中的卡片view的位次调整
             viewList.remove(changedView);
-            viewList.add((CardItemView) changedView);
-            changedView = viewList.get(0);
+            viewList.add(changedView);
             releasedViewList.remove(0);
 
-            isShowing++;
+            // 5. 更新showIndex、接口回调
+            if (isShowing + 1 < dataList.size()) {
+                isShowing++;
+            }
             if (null != cardSwitchListener) {
                 cardSwitchListener.onShow(isShowing);
             }
-
         }
     }
 
+    /**
+     * 顶层卡片View位置改变，底层的位置需要调整
+     *
+     * @param changedView 顶层的卡片view
+     */
     private void processLinkageView(View changedView) {
         int changeViewLeft = changedView.getLeft();
         int changeViewTop = changedView.getTop();
@@ -264,8 +273,9 @@ public class CardSlidePanel extends ViewGroup {
     private void animToSide(View changedView, float xvel, float yvel) {
         int finalX = initCenterViewX;
         int finalY = initCenterViewY;
+        int flyType = -1;
 
-        // 下面这一坨计算finalX和finalY，要读懂代码需要建立一个比较清晰的数学模型才能理解，不信拉倒
+        // 1. 下面这一坨计算finalX和finalY，要读懂代码需要建立一个比较清晰的数学模型才能理解，不信拉倒
         int dx = changedView.getLeft() - initCenterViewX;
         int dy = changedView.getTop() - initCenterViewY;
         if (dx == 0) {
@@ -275,12 +285,13 @@ public class CardSlidePanel extends ViewGroup {
         if (xvel > X_VEL_THRESHOLD || dx > X_DISTANCE_THRESHOLD) {
             finalX = allWidth;
             finalY = dy * (childWith + initCenterViewX) / dx + initCenterViewY;
+            flyType = VANISH_TYPE_RIGHT;
         } else if (xvel < -X_VEL_THRESHOLD || dx < -X_DISTANCE_THRESHOLD) {
             finalX = -childWith;
             finalY = dy * (childWith + initCenterViewX) / (-dx) + dy
                     + initCenterViewY;
+            flyType = VANISH_TYPE_LEFT;
         }
-
 
         // 如果斜率太高，就折中处理
         if (finalY > allHeight) {
@@ -294,10 +305,15 @@ public class CardSlidePanel extends ViewGroup {
             releasedViewList.add(changedView);
         }
 
-        // 这个是滑动消失的x目标位置
-        // 以下做了一坨的事情主要来计算这个finalLeft
+        // 2. 启动动画
         if (mDragHelper.smoothSlideViewTo(changedView, finalX, finalY)) {
             ViewCompat.postInvalidateOnAnimation(this);
+        }
+
+
+        // 3. 消失动画即将进行，listener回调
+        if (flyType >= 0 && cardSwitchListener != null) {
+            cardSwitchListener.onCardVanish(isShowing, flyType);
         }
     }
 
@@ -442,6 +458,19 @@ public class CardSlidePanel extends ViewGroup {
     }
 
     public interface CardSwitchListener {
+        /**
+         * 新卡片显示回调
+         *
+         * @param index 最顶层显示的卡片的index
+         */
         public void onShow(int index);
+
+        /**
+         * 卡片飞向两侧回调
+         *
+         * @param index 飞向两侧的卡片数据index
+         * @param type  飞向哪一侧{@link #VANISH_TYPE_LEFT}或{@link #VANISH_TYPE_RIGHT}
+         */
+        public void onCardVanish(int index, int type);
     }
 }

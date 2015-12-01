@@ -57,7 +57,12 @@ public class CardFragment extends Fragment {
 
             @Override
             public void onShow(int index) {
-                Log.d("CardFragment", "正在显示" + index);
+                Log.d("CardFragment", "正在显示-" + dataList.get(index).userName);
+            }
+
+            @Override
+            public void onCardVanish(int index, int type) {
+                Log.d("CardFragment", "正在消失-" + dataList.get(index).userName + " 消失type=" + type);
             }
         };
         slidePanel.setCardSwitchListener(cardSwitchListener);
@@ -69,7 +74,7 @@ public class CardFragment extends Fragment {
     private void prepareDataList() {
         int num = imagePaths.length;
 
-        for (int j = 0; j < 2; j++) {
+        for (int j = 0; j < 1; j++) {
             for (int i = 0; i < num; i++) {
                 CardDataItem dataItem = new CardDataItem();
                 dataItem.userName = names[i];
