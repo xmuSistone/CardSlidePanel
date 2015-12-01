@@ -10,9 +10,9 @@
 
 ### 截图
 <td>
-	 <img src="capture01.gif" width="270" height="450" />
-	 <img src="capture2.gif" width="270" height="450" />
-	 <img src="capture03.gif" width="270" height="450" />
+	 <img src="capture01.gif" width="280" height="480" />
+	 <img src="capture2.gif" width="280" height="480" />
+	 <img src="capture03.gif" width="280" height="480" />
 </td>
 
 ### 正经一点
