@@ -115,7 +115,7 @@ public class CardSlidePanel extends ViewGroup {
             public void onClick(View view) {
                 // 避免频繁调用
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastClickTime < 800) {
+                if (currentTime - lastClickTime < 100) {
                     return;
                 }
                 lastClickTime = currentTime;
@@ -396,8 +396,10 @@ public class CardSlidePanel extends ViewGroup {
         if (action == MotionEvent.ACTION_DOWN) {
             // 保存初次按下时arrowFlagView的Y坐标
             // action_down时就让mDragHelper开始工作，否则有时候导致异常
-            mDragHelper.processTouchEvent(ev);
-            orderViewStack();
+            if (ev.getPointerCount() <= 1) {
+                mDragHelper.processTouchEvent(ev);
+                orderViewStack();
+            }
         }
 
         return shouldIntercept;
