@@ -34,6 +34,7 @@
                 android:orientation="horizontal" >
 
                 <Button
+                    android:id="@+id/card_left_btn"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:background="@drawable/ignore_button" />
@@ -45,6 +46,7 @@
                     android:background="@drawable/home_button" />
 
                 <Button
+                    android:id="@+id/card_right_btn"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginLeft="10dp"

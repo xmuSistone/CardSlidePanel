@@ -1,18 +1,17 @@
 package com.stone.card;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 卡片滑动面板，主要逻辑实现类
@@ -53,6 +52,7 @@ public class CardSlidePanel extends ViewGroup {
     private CardSwitchListener cardSwitchListener; // 回调接口
     private List<CardDataItem> dataList; // 存储的数据链表
     private int isShowing = 0; // 当前正在显示的小项
+    private View leftBtn, rightBtn;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -95,12 +95,34 @@ public class CardSlidePanel extends ViewGroup {
             View childView = getChildAt(i);
             if (childView.getId() == R.id.card_bottom_layout) {
                 bottomLayout = childView;
+                initBottomLayout();
             } else {
                 CardItemView viewItem = (CardItemView) childView;
                 viewItem.setTag(i + 1);
                 viewList.add(viewItem);
             }
         }
+    }
+
+    private void initBottomLayout() {
+        leftBtn = bottomLayout.findViewById(R.id.card_left_btn);
+        rightBtn = bottomLayout.findViewById(R.id.card_right_btn);
+
+        OnClickListener btnListener = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                int type = -1;
+                if (view == leftBtn) {
+                    type = VANISH_TYPE_LEFT;
+                } else if (view == rightBtn) {
+                    type = VANISH_TYPE_RIGHT;
+                }
+                vanishOnBtnClick(type);
+            }
+        };
+        leftBtn.setOnClickListener(btnListener);
+        rightBtn.setOnClickListener(btnListener);
     }
 
     /**
@@ -317,6 +339,30 @@ public class CardSlidePanel extends ViewGroup {
         }
     }
 
+    /**
+     * 点击按钮消失动画
+     */
+    private void vanishOnBtnClick(int type) {
+        int finalX = 0;
+        if (type == VANISH_TYPE_LEFT) {
+            finalX = -childWith;
+        } else if (type == VANISH_TYPE_RIGHT) {
+            finalX = allWidth;
+        }
+
+        if (finalX != 0) {
+            View animateView = viewList.get(0);
+            releasedViewList.add(animateView);
+            if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight)) {
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
+        }
+
+        if (type >= 0 && cardSwitchListener != null) {
+            cardSwitchListener.onCardVanish(isShowing, type);
+        }
+    }
+
     @Override
     public void computeScroll() {
         if (mDragHelper.continueSettling(true)) {
@@ -347,16 +393,13 @@ public class CardSlidePanel extends ViewGroup {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         // 统一交给mDragHelper处理，由DragHelperCallback实现拖动效果
-        mDragHelper.processTouchEvent(e); // 该行代码可能会抛异常，正式发布时请将这行代码加上try catch
-        return true;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mDragHelper.processTouchEvent(ev);
+        try {
+            // 该行代码可能会抛异常，正式发布时请将这行代码加上try catch
+            mDragHelper.processTouchEvent(e);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return super.dispatchTouchEvent(ev);
+        return true;
     }
 
     @Override
@@ -453,10 +496,36 @@ public class CardSlidePanel extends ViewGroup {
         }
     }
 
+    /**
+     * 如果有新的数据到达，则需要填充新数据
+     * 该接口未测试，有需要的同学请自行脑补
+     *
+     * @param appendList 新数据列表
+     */
+    public void appendData(List<CardDataItem> appendList) {
+        dataList.addAll(appendList);
+
+        int currentIndex = isShowing;
+        int num = viewList.size();
+        for (int i = 0; i < num; i++) {
+            CardItemView itemView = viewList.get(i);
+            itemView.setVisibility(View.VISIBLE);
+            itemView.fillData(dataList.get(currentIndex++));
+        }
+    }
+
+    /**
+     * 设置卡片操作回调
+     *
+     * @param cardSwitchListener 回调接口
+     */
     public void setCardSwitchListener(CardSwitchListener cardSwitchListener) {
         this.cardSwitchListener = cardSwitchListener;
     }
 
+    /**
+     * 卡片回调接口
+     */
     public interface CardSwitchListener {
         /**
          * 新卡片显示回调
