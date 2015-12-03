@@ -8,7 +8,7 @@
 
 请看图:
 
-### 截图
+### 有图有真相
 <td>
 	 <img src="capture01.gif" width="290" height="485" />
 	 <img src="capture03.gif" width="290" height="485" />
@@ -18,8 +18,8 @@
 ### 正经一点
 不得不说，探探的ui效果真的很赞。在着手这个project之前，我没有参考过github上其它类似的开源项目。所以，如果这个project重复造了轮子，请不要打我。为了叙述上的方便，该项目代号为thisProj，没意见吧？<br>
 其实，我之前有一个开源工程叫[android-image-slide-panel](https://github.com/xmuSistone/android-image-slide-panel)(代号为[lastProj](https://github.com/xmuSistone/android-image-slide-panel))，功能上或多或少跟thisProj有些类似。在thisProj竣工之时，有一个小伙伴发了我另一个开源工程，跟thisProj也有相似之处。我下载了源码，导入了studio，apk跑起来的时候，发现它跟[lastProj](https://github.com/xmuSistone/android-image-slide-panel)存在一样的问题：卡片飞到两侧，如果动画没有结束，则不允许下一轮拖动。这对强迫症的用户来说，应该是很不爽的。<br>
-然而，探探却克服了所有这些问题。<br>
-或许，这个问题只有积淀过这些知识点的人才能琢磨的透吧。我确实思考了很久，想到了一个还不错的方案，细看代码深处，你也会如梦方醒吧。<br>
+然而，探探却克服了所有这些问题。或许，这个问题只有积淀过这些知识点的人才能琢磨的透吧。我确实思考了很久，想到了一个还不错的方案，细看代码深处，你也会如梦方醒吧。<br>
+### 无耻一点
 如果我能不要脸一些，我会说这个项目有以下优点：<br>
 * 快。真的流畅，滑动的手速再快也赶不上代码刷新view的速度快。<br>
 * 高效。仅仅四个卡片view轻松搞定任意多的数据。<br>
@@ -31,3 +31,6 @@
 细看代码即可知。
 ####demo apk download
 [apk download](app-debug.apk) (就在thisProj工程之中)
+
+### 尾声
+后面再加
