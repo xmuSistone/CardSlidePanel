@@ -193,11 +193,11 @@ public class CardSlidePanel extends ViewGroup {
      * 对View重新排序
      */
     private void orderViewStack() {
-        if (releasedViewList.size() == 0) {
-            return;
-        }
-
         synchronized (obj1) {
+            if (releasedViewList.size() == 0) {
+                return;
+            }
+
             CardItemView changedView = (CardItemView) releasedViewList.get(0);
             if (changedView.getLeft() == initCenterViewX) {
                 return;
@@ -347,27 +347,29 @@ public class CardSlidePanel extends ViewGroup {
      * 点击按钮消失动画
      */
     private void vanishOnBtnClick(int type) {
-        View animateView = viewList.get(0);
-        if (animateView.getVisibility() != View.VISIBLE) {
-            return;
-        }
-
-        int finalX = 0;
-        if (type == VANISH_TYPE_LEFT) {
-            finalX = -childWith;
-        } else if (type == VANISH_TYPE_RIGHT) {
-            finalX = allWidth;
-        }
-
-        if (finalX != 0) {
-            releasedViewList.add(animateView);
-            if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight)) {
-                ViewCompat.postInvalidateOnAnimation(this);
+        synchronized (obj1) {
+            View animateView = viewList.get(0);
+            if (animateView.getVisibility() != View.VISIBLE || releasedViewList.contains(animateView)) {
+                return;
             }
-        }
 
-        if (type >= 0 && cardSwitchListener != null) {
-            cardSwitchListener.onCardVanish(isShowing, type);
+            int finalX = 0;
+            if (type == VANISH_TYPE_LEFT) {
+                finalX = -childWith;
+            } else if (type == VANISH_TYPE_RIGHT) {
+                finalX = allWidth;
+            }
+
+            if (finalX != 0) {
+                releasedViewList.add(animateView);
+                if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight)) {
+                    ViewCompat.postInvalidateOnAnimation(this);
+                }
+            }
+
+            if (type >= 0 && cardSwitchListener != null) {
+                cardSwitchListener.onCardVanish(isShowing, type);
+            }
         }
     }
 
@@ -377,9 +379,11 @@ public class CardSlidePanel extends ViewGroup {
             ViewCompat.postInvalidateOnAnimation(this);
         } else {
             // 动画结束
-            if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
-                orderViewStack();
-                btnLock = false;
+            synchronized (this) {
+                if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
+                    orderViewStack();
+                    btnLock = false;
+                }
             }
         }
     }
