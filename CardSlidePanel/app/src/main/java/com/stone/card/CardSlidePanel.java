@@ -29,7 +29,6 @@ public class CardSlidePanel extends ViewGroup {
     private int allWidth = 0; // 面板的宽度
     private int allHeight = 0; // 面板的高度
     private int childWith = 0; // 每一个子View对应的宽度
-    private int screenWidth = 0;
 
     private static final float SCALE_STEP = 0.08f; // view叠加缩放的步长
     private static final int MAX_SLIDE_DISTANCE_LINKAGE = 400; // 水平距离+垂直距离
@@ -65,7 +64,6 @@ public class CardSlidePanel extends ViewGroup {
 
     public CardSlidePanel(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.card);
 
         bottomMarginTop = (int) a.getDimension(R.styleable.card_bottomMarginTop, bottomMarginTop);
@@ -115,7 +113,7 @@ public class CardSlidePanel extends ViewGroup {
             public void onClick(View view) {
                 // 避免频繁调用
                 long currentTime = System.currentTimeMillis();
-                if (currentTime - lastClickTime < 100) {
+                if (currentTime - lastClickTime < 800) {
                     return;
                 }
                 lastClickTime = currentTime;
@@ -154,7 +152,7 @@ public class CardSlidePanel extends ViewGroup {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             // 如果数据List为空，或者子View不可见，则不予处理
-            if (dataList == null || dataList.size() == 0
+            if (child == bottomLayout || dataList == null || dataList.size() == 0
                     || child.getVisibility() != View.VISIBLE || child.getScaleX() <= 1.0f - SCALE_STEP) {
                 // 一般来讲，如果拖动的是第三层、或者第四层的View，则直接禁止
                 // 此处用getScale的用法来巧妙回避
@@ -163,9 +161,7 @@ public class CardSlidePanel extends ViewGroup {
 
             // 只捕获顶部view(rotation=0)
             int childIndex = viewList.indexOf(child);
-            if (childIndex + 2 >= viewList.size()) {
-                return false;
-            } else if (child == bottomLayout) {
+            if (childIndex > 0) {
                 return false;
             }
 
@@ -394,12 +390,12 @@ public class CardSlidePanel extends ViewGroup {
         boolean shouldIntercept = mDragHelper.shouldInterceptTouchEvent(ev);
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
+            // ACTION_DOWN的时候就对view重新排序
+            orderViewStack();
+
             // 保存初次按下时arrowFlagView的Y坐标
             // action_down时就让mDragHelper开始工作，否则有时候导致异常
-            if (ev.getPointerCount() <= 1) {
-                mDragHelper.processTouchEvent(ev);
-                orderViewStack();
-            }
+            mDragHelper.processTouchEvent(ev);
         }
 
         return shouldIntercept;
@@ -407,11 +403,12 @@ public class CardSlidePanel extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        // 统一交给mDragHelper处理，由DragHelperCallback实现拖动效果
         try {
+            // 统一交给mDragHelper处理，由DragHelperCallback实现拖动效果
             // 该行代码可能会抛异常，正式发布时请将这行代码加上try catch
             mDragHelper.processTouchEvent(e);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             ex.printStackTrace();
         }
         return true;
