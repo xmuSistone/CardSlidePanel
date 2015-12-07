@@ -52,7 +52,7 @@ public class CardSlidePanel extends ViewGroup {
     private List<CardDataItem> dataList; // 存储的数据链表
     private int isShowing = 0; // 当前正在显示的小项
     private View leftBtn, rightBtn;
-    private long lastClickTime = 0;
+    private boolean btnLock = false;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -111,12 +111,7 @@ public class CardSlidePanel extends ViewGroup {
 
             @Override
             public void onClick(View view) {
-                // 避免频繁调用
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastClickTime < 800) {
-                    return;
-                }
-                lastClickTime = currentTime;
+                btnLock = true;
 
                 int type = -1;
                 if (view == leftBtn) {
@@ -156,6 +151,10 @@ public class CardSlidePanel extends ViewGroup {
                     || child.getVisibility() != View.VISIBLE || child.getScaleX() <= 1.0f - SCALE_STEP) {
                 // 一般来讲，如果拖动的是第三层、或者第四层的View，则直接禁止
                 // 此处用getScale的用法来巧妙回避
+                return false;
+            }
+
+            if (btnLock) {
                 return false;
             }
 
@@ -380,6 +379,7 @@ public class CardSlidePanel extends ViewGroup {
             // 动画结束
             if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
                 orderViewStack();
+                btnLock = false;
             }
         }
     }
