@@ -33,4 +33,4 @@
 [apk download](app-debug.apk) (就在thisProj工程之中)
 
 ### 尾声
-后面再加
+其实，在我所有的Repository中，这个库是我最满意的一个，因为我对ViewDragHelper的使用，已经超出了先前的预期。此处，请允许我更不要脸一些，我对这个Repository的期待是：希望它能够成为卡片式交互的标杆。有任何bug，请提issue，我会尽力去解决。也欢迎牛掰的大神们，多多pull request，我会有选择的做合并处理。
