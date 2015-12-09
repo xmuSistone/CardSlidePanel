@@ -64,6 +64,11 @@ public class CardFragment extends Fragment {
             public void onCardVanish(int index, int type) {
                 Log.d("CardFragment", "正在消失-" + dataList.get(index).userName + " 消失type=" + type);
             }
+
+            @Override
+            public void onItemClick(View cardView, int index) {
+                Log.d("CardFragment", "卡片点击-" + dataList.get(index).userName);
+            }
         };
         slidePanel.setCardSwitchListener(cardSwitchListener);
 

@@ -39,7 +39,6 @@ public class CardSlidePanel extends ViewGroup {
     private int bottomMarginTop = 40;
     private int yOffsetStep = 40; // view叠加垂直偏移量的步长
 
-
     private static final int X_VEL_THRESHOLD = 900;
     private static final int X_DISTANCE_THRESHOLD = 300;
 
@@ -53,6 +52,8 @@ public class CardSlidePanel extends ViewGroup {
     private int isShowing = 0; // 当前正在显示的小项
     private View leftBtn, rightBtn;
     private boolean btnLock = false;
+
+    private OnClickListener btnListener;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -73,14 +74,28 @@ public class CardSlidePanel extends ViewGroup {
                 .create(this, 10f, new DragHelperCallback());
         mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
         a.recycle();
-    }
 
-    class XScrollDetector extends SimpleOnGestureListener {
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx,
-                                float dy) {
-            return Math.abs(dy) > Math.abs(dx);
-        }
+        btnListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view instanceof CardItemView) {
+                    // 点击的是卡片
+                    if (null != cardSwitchListener) {
+                        cardSwitchListener.onItemClick(view, isShowing);
+                    }
+                } else {
+                    // 点击的是bottomLayout里面的一些按钮
+                    btnLock = true;
+                    int type = -1;
+                    if (view == leftBtn) {
+                        type = VANISH_TYPE_LEFT;
+                    } else if (view == rightBtn) {
+                        type = VANISH_TYPE_RIGHT;
+                    }
+                    vanishOnBtnClick(type);
+                }
+            }
+        };
     }
 
     @Override
@@ -98,6 +113,7 @@ public class CardSlidePanel extends ViewGroup {
             } else {
                 CardItemView viewItem = (CardItemView) childView;
                 viewItem.setTag(i + 1);
+                viewItem.setOnClickListener(btnListener);
                 viewList.add(viewItem);
             }
         }
@@ -107,22 +123,6 @@ public class CardSlidePanel extends ViewGroup {
         leftBtn = bottomLayout.findViewById(R.id.card_left_btn);
         rightBtn = bottomLayout.findViewById(R.id.card_right_btn);
 
-        OnClickListener btnListener = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                btnLock = true;
-
-                int type = -1;
-                if (view == leftBtn) {
-                    type = VANISH_TYPE_LEFT;
-                } else if (view == rightBtn) {
-                    type = VANISH_TYPE_RIGHT;
-                }
-
-                vanishOnBtnClick(type);
-            }
-        };
         leftBtn.setOnClickListener(btnListener);
         rightBtn.setOnClickListener(btnListener);
     }
@@ -400,6 +400,10 @@ public class CardSlidePanel extends ViewGroup {
             // 保存初次按下时arrowFlagView的Y坐标
             // action_down时就让mDragHelper开始工作，否则有时候导致异常
             mDragHelper.processTouchEvent(ev);
+            return false;
+        }
+        else if (action == MotionEvent.ACTION_UP) {
+            return false;
         }
 
         return shouldIntercept;
@@ -411,8 +415,7 @@ public class CardSlidePanel extends ViewGroup {
             // 统一交给mDragHelper处理，由DragHelperCallback实现拖动效果
             // 该行代码可能会抛异常，正式发布时请将这行代码加上try catch
             mDragHelper.processTouchEvent(e);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return true;
@@ -557,5 +560,13 @@ public class CardSlidePanel extends ViewGroup {
          * @param type  飞向哪一侧{@link #VANISH_TYPE_LEFT}或{@link #VANISH_TYPE_RIGHT}
          */
         public void onCardVanish(int index, int type);
+
+        /**
+         * 卡片点击事件
+         *
+         * @param cardView
+         * @param index
+         */
+        public void onItemClick(View cardView, int index);
     }
 }
