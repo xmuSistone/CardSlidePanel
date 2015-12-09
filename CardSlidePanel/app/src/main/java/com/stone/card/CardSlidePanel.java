@@ -10,6 +10,7 @@ import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class CardSlidePanel extends ViewGroup {
         btnListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view instanceof CardItemView) {
+                if (view instanceof ImageView) {
                     // 点击的是卡片
                     if (null != cardSwitchListener && view.getScaleX() > 1 - SCALE_STEP) {
                         cardSwitchListener.onItemClick(view, isShowing);
@@ -117,7 +118,7 @@ public class CardSlidePanel extends ViewGroup {
             } else {
                 CardItemView viewItem = (CardItemView) childView;
                 viewItem.setTag(i + 1);
-                viewItem.setOnClickListener(btnListener);
+                viewItem.imageView.setOnClickListener(btnListener);
                 viewList.add(viewItem);
             }
         }
@@ -576,9 +577,9 @@ public class CardSlidePanel extends ViewGroup {
         /**
          * 卡片点击事件
          *
-         * @param cardView
-         * @param index
+         * @param cardImageView 卡片上的图片view
+         * @param index         点击到的index
          */
-        public void onItemClick(View cardView, int index);
+        public void onItemClick(View cardImageView, int index);
     }
 }

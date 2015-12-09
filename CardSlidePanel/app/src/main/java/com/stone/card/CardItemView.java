@@ -16,7 +16,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 @SuppressLint("NewApi")
 public class CardItemView extends LinearLayout {
 
-    private ImageView imageView;
+    public ImageView imageView;
     private TextView userNameTv;
     private TextView imageNumTv;
     private TextView likeNumTv;
