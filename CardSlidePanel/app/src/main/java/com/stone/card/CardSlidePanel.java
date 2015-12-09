@@ -80,7 +80,7 @@ public class CardSlidePanel extends ViewGroup {
             public void onClick(View view) {
                 if (view instanceof CardItemView) {
                     // 点击的是卡片
-                    if (null != cardSwitchListener) {
+                    if (null != cardSwitchListener && view.getScaleX() > 1 - SCALE_STEP) {
                         cardSwitchListener.onItemClick(view, isShowing);
                     }
                 } else {
