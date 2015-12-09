@@ -3,6 +3,7 @@ package com.stone.card;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -52,7 +53,7 @@ public class CardSlidePanel extends ViewGroup {
     private int isShowing = 0; // 当前正在显示的小项
     private View leftBtn, rightBtn;
     private boolean btnLock = false;
-
+    private GestureDetectorCompat moveDetector;
     private OnClickListener btnListener;
 
     public CardSlidePanel(Context context) {
@@ -96,6 +97,9 @@ public class CardSlidePanel extends ViewGroup {
                 }
             }
         };
+
+        moveDetector = new GestureDetectorCompat(context,
+                new MoveDetector());
     }
 
     @Override
@@ -126,6 +130,17 @@ public class CardSlidePanel extends ViewGroup {
         leftBtn.setOnClickListener(btnListener);
         rightBtn.setOnClickListener(btnListener);
     }
+
+    class MoveDetector extends SimpleOnGestureListener {
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx,
+                                float dy) {
+            // 拖动了，touch不往下传递
+            return Math.abs(dy) + Math.abs(dx) > 5;
+        }
+    }
+
 
     /**
      * 这是viewdraghelper拖拽效果的主要逻辑
@@ -392,6 +407,7 @@ public class CardSlidePanel extends ViewGroup {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean shouldIntercept = mDragHelper.shouldInterceptTouchEvent(ev);
+        boolean moveFlag = moveDetector.onTouchEvent(ev);
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             // ACTION_DOWN的时候就对view重新排序
@@ -400,13 +416,9 @@ public class CardSlidePanel extends ViewGroup {
             // 保存初次按下时arrowFlagView的Y坐标
             // action_down时就让mDragHelper开始工作，否则有时候导致异常
             mDragHelper.processTouchEvent(ev);
-            return false;
-        }
-        else if (action == MotionEvent.ACTION_UP) {
-            return false;
         }
 
-        return shouldIntercept;
+        return shouldIntercept && moveFlag;
     }
 
     @Override
