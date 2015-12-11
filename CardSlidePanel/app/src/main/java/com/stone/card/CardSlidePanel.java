@@ -216,10 +216,11 @@ public class CardSlidePanel extends ViewGroup {
 
             CardItemView changedView = (CardItemView) releasedViewList.get(0);
             if (changedView.getLeft() == initCenterViewX) {
+                releasedViewList.remove(0);
                 return;
             }
 
-            // 1. 消失的卡片View位置重置
+            // 1. 消失的卡片View位置重置，由于大多手机会重新调用onLayout函数，所以此处大可以不做处理，不信你注释掉看看
             changedView.offsetLeftAndRight(initCenterViewX
                     - changedView.getLeft());
             changedView.offsetTopAndBottom(initCenterViewY
