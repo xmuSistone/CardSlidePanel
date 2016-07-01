@@ -123,6 +123,7 @@ public class CardSlidePanel extends ViewGroup {
                 // for循环取view的时候，是从外层往里取
                 CardItemView viewItem = (CardItemView) childView;
                 viewItem.setCardElevation(fromShadow--);
+                viewItem.setParentView(this);
                 viewItem.setTag(i + 1);
                 viewItem.imageView.setOnClickListener(btnListener);
                 viewList.add(viewItem);
@@ -157,13 +158,7 @@ public class CardSlidePanel extends ViewGroup {
         @Override
         public void onViewPositionChanged(View changedView, int left, int top,
                                           int dx, int dy) {
-            // 调用offsetLeftAndRight导致viewPosition改变，会调到此处，所以此处对index做保护处理
-            int index = viewList.indexOf(changedView);
-            if (index + 2 > viewList.size()) {
-                return;
-            }
-
-            processLinkageView(changedView);
+            onViewPosChanged((CardItemView) changedView);
         }
 
         @Override
@@ -186,6 +181,7 @@ public class CardSlidePanel extends ViewGroup {
                 return false;
             }
 
+            ((CardItemView) child).onStartDragging();
             return true;
         }
 
@@ -197,7 +193,7 @@ public class CardSlidePanel extends ViewGroup {
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            animToSide(releasedChild, xvel, yvel);
+            animToSide((CardItemView) releasedChild, xvel);
         }
 
         @Override
@@ -209,6 +205,17 @@ public class CardSlidePanel extends ViewGroup {
         public int clampViewPositionVertical(View child, int top, int dy) {
             return top;
         }
+    }
+
+
+    public void onViewPosChanged(CardItemView changedView) {
+        // 调用offsetLeftAndRight导致viewPosition改变，会调到此处，所以此处对index做保护处理
+        int index = viewList.indexOf(changedView);
+        if (index + 2 > viewList.size()) {
+            return;
+        }
+
+        processLinkageView(changedView);
     }
 
     /**
@@ -323,7 +330,7 @@ public class CardSlidePanel extends ViewGroup {
      *
      * @param xvel X方向上的滑动速度
      */
-    private void animToSide(View changedView, float xvel, float yvel) {
+    private void animToSide(CardItemView changedView, float xvel) {
         int finalX = initCenterViewX;
         int finalY = initCenterViewY;
         int flyType = -1;
@@ -354,19 +361,19 @@ public class CardSlidePanel extends ViewGroup {
         }
 
         // 如果没有飞向两侧，而是回到了中间，需要谨慎处理
-        if (finalX != initCenterViewX) {
+        if (finalX == initCenterViewX) {
+            changedView.animTo(initCenterViewX, initCenterViewY);
+        } else {
+            // 2. 向两边消失的动画
             releasedViewList.add(changedView);
-        }
+            if (mDragHelper.smoothSlideViewTo(changedView, finalX, finalY)) {
+                ViewCompat.postInvalidateOnAnimation(this);
+            }
 
-        // 2. 启动动画
-        if (mDragHelper.smoothSlideViewTo(changedView, finalX, finalY)) {
-            ViewCompat.postInvalidateOnAnimation(this);
-        }
-
-
-        // 3. 消失动画即将进行，listener回调
-        if (flyType >= 0 && cardSwitchListener != null) {
-            cardSwitchListener.onCardVanish(isShowing, flyType);
+            // 3. 消失动画即将进行，listener回调
+            if (flyType >= 0 && cardSwitchListener != null) {
+                cardSwitchListener.onCardVanish(isShowing, flyType);
+            }
         }
     }
 
@@ -483,7 +490,7 @@ public class CardSlidePanel extends ViewGroup {
 
         // 布局底部按钮的View
         if (null != bottomLayout) {
-            int layoutTop = viewList.get(0).getMeasuredHeight() + bottomMarginTop;
+            int layoutTop = viewList.get(0).getBottom() + bottomMarginTop;
             bottomLayout.layout(left, layoutTop, right, layoutTop
                     + bottomLayout.getMeasuredHeight());
         }
@@ -530,7 +537,7 @@ public class CardSlidePanel extends ViewGroup {
 
         int num = viewList.size();
         for (int i = 0; i < num; i++) {
-            CardItemView itemView = (CardItemView) viewList.get(i);
+            CardItemView itemView = viewList.get(i);
             itemView.fillData(dataList.get(i));
             itemView.setVisibility(View.VISIBLE);
         }

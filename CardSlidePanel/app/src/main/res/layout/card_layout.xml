@@ -15,65 +15,61 @@
         android:textColor="#fff"
         android:textSize="18sp" />
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
 
-        <com.stone.card.CardSlidePanel
-            android:id="@+id/image_slide_panel"
+    <com.stone.card.CardSlidePanel
+        android:id="@+id/image_slide_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card:bottomMarginTop="60dp"
+        card:yOffsetStep="25dp">
+
+        <LinearLayout
+            android:id="@+id/card_bottom_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            card:bottomMarginTop="40dp"
-            card:yOffsetStep="22dp">
+            android:gravity="center"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/card_bottom_layout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <Button
+                android:id="@+id/card_left_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/ignore_button" />
 
-                <Button
-                    android:id="@+id/card_left_btn"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:background="@drawable/ignore_button" />
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/home_button" />
 
-                <Button
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/home_button" />
+            <Button
+                android:id="@+id/card_right_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/like_button" />
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/card_right_btn"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/like_button" />
-            </LinearLayout>
+        <com.stone.card.CardItemView
+            android:layout_width="@dimen/card_image_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_shape" />
 
-            <com.stone.card.CardItemView
-                android:layout_width="@dimen/card_image_width"
-                android:layout_height="wrap_content"
-                android:background="@drawable/back_shape" />
+        <com.stone.card.CardItemView
+            android:layout_width="@dimen/card_image_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_shape" />
 
-            <com.stone.card.CardItemView
-                android:layout_width="@dimen/card_image_width"
-                android:layout_height="wrap_content"
-                android:background="@drawable/back_shape" />
+        <com.stone.card.CardItemView
+            android:layout_width="@dimen/card_image_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_shape" />
 
-            <com.stone.card.CardItemView
-                android:layout_width="@dimen/card_image_width"
-                android:layout_height="wrap_content"
-                android:background="@drawable/back_shape" />
+        <com.stone.card.CardItemView
+            android:layout_width="@dimen/card_image_width"
+            android:layout_height="wrap_content"
+            android:background="@drawable/back_shape" />
 
-            <com.stone.card.CardItemView
-                android:layout_width="@dimen/card_image_width"
-                android:layout_height="wrap_content"
-                android:background="@drawable/back_shape" />
-
-        </com.stone.card.CardSlidePanel>
-    </RelativeLayout>
+    </com.stone.card.CardSlidePanel>
 
 </LinearLayout>

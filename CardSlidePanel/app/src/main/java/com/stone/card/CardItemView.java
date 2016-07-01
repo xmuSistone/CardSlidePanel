@@ -6,10 +6,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.rebound.SimpleSpringListener;
+import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringSystem;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
@@ -19,11 +21,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 @SuppressLint("NewApi")
 public class CardItemView extends CardView {
-
+    private Spring springX, springY;
     public ImageView imageView;
     private TextView userNameTv;
     private TextView imageNumTv;
     private TextView likeNumTv;
+    private CardSlidePanel parentView;
 
     public CardItemView(Context context) {
         this(context, null);
@@ -43,6 +46,32 @@ public class CardItemView extends CardView {
         setClipToOutline(false);
         setCardBackgroundColor(Color.WHITE);
         setRadius(20);
+
+        initSpring();
+    }
+
+    private void initSpring() {
+        SpringSystem mSpringSystem = SpringSystem.create();
+        springX = mSpringSystem.createSpring();
+        springY = mSpringSystem.createSpring();
+
+        springX.addListener(new SimpleSpringListener() {
+            @Override
+            public void onSpringUpdate(Spring spring) {
+                int xPos = (int) spring.getCurrentValue();
+                setScreenX(xPos);
+                parentView.onViewPosChanged(CardItemView.this);
+            }
+        });
+
+        springY.addListener(new SimpleSpringListener() {
+            @Override
+            public void onSpringUpdate(Spring spring) {
+                int yPos = (int) spring.getCurrentValue();
+                setScreenY(yPos);
+                parentView.onViewPosChanged(CardItemView.this);
+            }
+        });
     }
 
     public void fillData(CardDataItem itemData) {
@@ -50,6 +79,32 @@ public class CardItemView extends CardView {
         userNameTv.setText(itemData.userName);
         imageNumTv.setText(itemData.imageNum + "");
         likeNumTv.setText(itemData.likeNum + "");
+    }
+
+
+    /**
+     * 动画移动到某个位置
+     */
+    public void animTo(int xPos, int yPos) {
+        setCurrentSpringPos(getLeft(), getTop());
+        springX.setEndValue(xPos);
+        springY.setEndValue(yPos);
+    }
+
+    /**
+     * 设置当前spring位置
+     */
+    private void setCurrentSpringPos(int xPos, int yPos) {
+        springX.setCurrentValue(xPos);
+        springY.setCurrentValue(yPos);
+    }
+
+    public void setScreenX(int screenX) {
+        this.offsetLeftAndRight(screenX - getLeft());
+    }
+
+    public void setScreenY(int screenY) {
+        this.offsetTopAndBottom(screenY - getTop());
     }
 
     /**
@@ -60,5 +115,14 @@ public class CardItemView extends CardView {
                 .ofFloat(this, "alpha", 0, 1)
                 .setDuration(300);
         alphaAnimator.start();
+    }
+
+    public void setParentView(CardSlidePanel parentView) {
+        this.parentView = parentView;
+    }
+
+    public void onStartDragging() {
+        springX.setAtRest();
+        springY.setAtRest();
     }
 }
