@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="fill_parent"
@@ -17,21 +17,21 @@
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent">
 
         <com.stone.card.CardSlidePanel
             android:id="@+id/image_slide_panel"
             android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             card:bottomMarginTop="40dp"
-            card:yOffsetStep="22dp"
-            android:layout_height="fill_parent" >
+            card:yOffsetStep="22dp">
 
             <LinearLayout
                 android:id="@+id/card_bottom_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/card_left_btn"
@@ -54,24 +54,24 @@
             </LinearLayout>
 
             <com.stone.card.CardItemView
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/card_image_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:background="@drawable/back_shape" />
 
             <com.stone.card.CardItemView
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/card_image_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:background="@drawable/back_shape" />
 
             <com.stone.card.CardItemView
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/card_image_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:background="@drawable/back_shape" />
 
             <com.stone.card.CardItemView
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/card_image_width"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:background="@drawable/back_shape" />
 
         </com.stone.card.CardSlidePanel>
     </RelativeLayout>

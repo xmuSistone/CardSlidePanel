@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:clickable="true"
-    android:paddingTop="20dp"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:layout_width="@dimen/card_image_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -15,7 +11,7 @@
         <ImageView
             android:id="@+id/card_image_view"
             android:layout_width="fill_parent"
-            android:layout_height="260dp"
+            android:layout_height="@dimen/card_image_height"
             android:scaleType="fitXY" />
 
         <TextView
@@ -33,41 +29,35 @@
             android:textColor="#fff" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/back_shape"
-        android:orientation="horizontal"
         android:padding="10dp">
 
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/card_user_name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:text="叶琪琪 23"
+            android:textColor="#111"
+            android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/card_user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:text="叶琪琪 23"
-                android:textColor="#111"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/card_other_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:gravity="center_horizontal"
-                android:text="其它 6km"
-                android:textColor="#888" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/card_other_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/card_user_name"
+            android:layout_marginBottom="6dp"
+            android:layout_marginTop="6dp"
+            android:text="其它 6km"
+            android:textColor="#888" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="3dp"
             android:orientation="horizontal">
 
             <TextView
@@ -92,6 +82,5 @@
                 android:textColor="#999"
                 android:textSize="15sp" />
         </LinearLayout>
-    </LinearLayout>
-
+    </RelativeLayout>
 </LinearLayout>

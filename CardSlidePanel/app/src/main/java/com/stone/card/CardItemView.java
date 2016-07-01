@@ -1,20 +1,24 @@
 package com.stone.card;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 卡片View项
+ *
  * @author xmuSistone
  */
 @SuppressLint("NewApi")
-public class CardItemView extends LinearLayout {
+public class CardItemView extends CardView {
 
     public ImageView imageView;
     private TextView userNameTv;
@@ -36,6 +40,9 @@ public class CardItemView extends LinearLayout {
         userNameTv = (TextView) findViewById(R.id.card_user_name);
         imageNumTv = (TextView) findViewById(R.id.card_pic_num);
         likeNumTv = (TextView) findViewById(R.id.card_like);
+        setClipToOutline(false);
+        setCardBackgroundColor(Color.WHITE);
+        setRadius(20);
     }
 
     public void fillData(CardDataItem itemData) {
@@ -43,5 +50,15 @@ public class CardItemView extends LinearLayout {
         userNameTv.setText(itemData.userName);
         imageNumTv.setText(itemData.imageNum + "");
         likeNumTv.setText(itemData.likeNum + "");
+    }
+
+    /**
+     * alpha从0到1的动画
+     */
+    public void startShowingUpAnimation() {
+        ObjectAnimator alphaAnimator = ObjectAnimator
+                .ofFloat(this, "alpha", 0, 1)
+                .setDuration(300);
+        alphaAnimator.start();
     }
 }

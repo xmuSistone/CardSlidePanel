@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.ViewDragHelper;
 import android.util.AttributeSet;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -24,6 +25,7 @@ import java.util.List;
 public class CardSlidePanel extends ViewGroup {
     private List<CardItemView> viewList = new ArrayList<CardItemView>(); // 存放的是每一层的view，从顶到底
     private List<View> releasedViewList = new ArrayList<View>(); // 手指松开后存放的view列表
+    private static final int shadowOrigin = 20; // view层叠的时候，在前面的shadow值一定要比后面的大
 
     /* 拖拽工具类 */
     private final ViewDragHelper mDragHelper; // 这个跟原生的ViewDragHelper差不多，我仅仅只是修改了Interpolator
@@ -34,6 +36,7 @@ public class CardSlidePanel extends ViewGroup {
 
     private static final float SCALE_STEP = 0.08f; // view叠加缩放的步长
     private static final int MAX_SLIDE_DISTANCE_LINKAGE = 400; // 水平距离+垂直距离
+
     // 超过这个值
     // 则下一层view完成向上一层view的过渡
     private View bottomLayout; // 卡片下边的三个按钮布局
@@ -110,13 +113,16 @@ public class CardSlidePanel extends ViewGroup {
         // 渲染完成，初始化卡片view列表
         viewList.clear();
         int num = getChildCount();
+        int fromShadow = shadowOrigin + num - 2;
         for (int i = num - 1; i >= 0; i--) {
             View childView = getChildAt(i);
             if (childView.getId() == R.id.card_bottom_layout) {
                 bottomLayout = childView;
                 initBottomLayout();
             } else {
+                // for循环取view的时候，是从外层往里取
                 CardItemView viewItem = (CardItemView) childView;
+                viewItem.setCardElevation(fromShadow--);
                 viewItem.setTag(i + 1);
                 viewItem.imageView.setOnClickListener(btnListener);
                 viewList.add(viewItem);
@@ -228,12 +234,16 @@ public class CardSlidePanel extends ViewGroup {
             float scale = 1.0f - SCALE_STEP * 2;
             changedView.setScaleX(scale);
             changedView.setScaleY(scale);
+            int shadow = shadowOrigin;
+            changedView.setCardElevation(shadow++);
+            changedView.startShowingUpAnimation();
 
             // 2. 卡片View在ViewGroup中的顺次调整
             int num = viewList.size();
             for (int i = num - 1; i > 0; i--) {
-                View tempView = viewList.get(i);
+                CardItemView tempView = viewList.get(i);
                 tempView.bringToFront();
+                tempView.setCardElevation(shadow++);
             }
 
             // 3. changedView填充新数据
@@ -456,7 +466,8 @@ public class CardSlidePanel extends ViewGroup {
         for (int i = 0; i < size; i++) {
             View viewItem = viewList.get(i);
             int childHeight = viewItem.getMeasuredHeight();
-            viewItem.layout(left, top, right, top + childHeight);
+            int viewLeft = (getWidth() - viewItem.getMeasuredWidth()) / 2;
+            viewItem.layout(viewLeft, top, viewLeft + viewItem.getMeasuredWidth(), top + childHeight);
             int offset = yOffsetStep * i;
             float scale = 1 - SCALE_STEP * i;
             if (i > 2) {
