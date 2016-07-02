@@ -36,5 +36,4 @@
 有任何bug，请提issue，我会尽力去解决。也欢迎牛掰的大神们，多多pull request，我会有选择的做合并处理。
 
 ### 备注
-由于使用了CardView，导致在android 5.0以下的手机中，阴影效果很别扭，有强迫症的同学，可以废除CardView，由美工切图实现阴影效果。同时，该库使用了ripple，安卓5.0以下的手机不支持这个api，导致App强制退出，代码调试时可以去除ripple效果(在back_shape.xml中)。<br>
-在android 5.0及以上的手机中，可以直接run demo。
+由于使用了CardView，导致在android 5.0以下的手机中，阴影效果很别扭，有强迫症的同学，可以废除CardView，由美工切图实现阴影效果。
