@@ -18,7 +18,7 @@
             android:id="@+id/maskView"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/card_image_height"
-            android:background="@drawable/back_shape"
+            android:background="?android:attr/selectableItemBackground"
             android:clickable="true" />
 
         <TextView

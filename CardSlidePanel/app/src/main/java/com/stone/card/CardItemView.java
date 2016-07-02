@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -50,7 +51,9 @@ public class CardItemView extends CardView {
         try {
             setCardBackgroundColor(Color.WHITE);
             setRadius(20);
-            setClipToOutline(false);
+            if (Build.VERSION.SDK_INT >= 21) {
+                setClipToOutline(false);
+            }
         } catch (Exception e) {
         }
 
