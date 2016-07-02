@@ -61,7 +61,7 @@ public class CardItemView extends CardView {
     }
 
     private void initSpring() {
-        SpringConfig springConfig = SpringConfig.fromBouncinessAndSpeed(17, 20);
+        SpringConfig springConfig = SpringConfig.fromBouncinessAndSpeed(15, 20);
         SpringSystem mSpringSystem = SpringSystem.create();
         springX = mSpringSystem.createSpring().setSpringConfig(springConfig);
         springY = mSpringSystem.createSpring().setSpringConfig(springConfig);
