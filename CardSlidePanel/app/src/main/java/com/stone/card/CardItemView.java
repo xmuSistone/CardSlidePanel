@@ -1,6 +1,5 @@
 package com.stone.card;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
@@ -115,16 +114,6 @@ public class CardItemView extends CardView {
 
     public void setScreenY(int screenY) {
         this.offsetTopAndBottom(screenY - getTop());
-    }
-
-    /**
-     * alpha从0到1的动画
-     */
-    public void startShowingUpAnimation() {
-        ObjectAnimator alphaAnimator = ObjectAnimator
-                .ofFloat(this, "alpha", 0, 1)
-                .setDuration(300);
-        alphaAnimator.start();
     }
 
     public void setParentView(CardSlidePanel parentView) {

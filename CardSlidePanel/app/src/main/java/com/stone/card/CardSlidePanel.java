@@ -12,7 +12,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,6 +135,9 @@ public class CardSlidePanel extends ViewGroup {
                 viewList.add(viewItem);
             }
         }
+
+        CardItemView bottomCardView = viewList.get(viewList.size() - 1);
+        bottomCardView.setAlpha(0);
     }
 
     private void initBottomLayout() {
@@ -250,7 +252,7 @@ public class CardSlidePanel extends ViewGroup {
             changedView.setScaleY(scale);
             int shadow = shadowOrigin;
             changedView.setCardElevation(shadow++);
-            changedView.startShowingUpAnimation();
+            changedView.setAlpha(0);
 
             // 2. 卡片View在ViewGroup中的顺次调整
             int num = viewList.size();
@@ -311,6 +313,9 @@ public class CardSlidePanel extends ViewGroup {
 
         ajustLinkageViewItem(changedView, rate1, 1);
         ajustLinkageViewItem(changedView, rate2, 2);
+
+        CardItemView bottomCardView = viewList.get(viewList.size() - 1);
+        bottomCardView.setAlpha(rate2);
     }
 
     // 由index对应view变成index-1对应的view
