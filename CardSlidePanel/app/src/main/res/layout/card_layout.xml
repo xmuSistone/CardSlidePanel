@@ -15,12 +15,12 @@
         android:textColor="#fff"
         android:textSize="18sp" />
 
-
     <com.stone.card.CardSlidePanel
         android:id="@+id/image_slide_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         card:bottomMarginTop="60dp"
+        card:itemMarginTop="30dp"
         card:yOffsetStep="25dp">
 
         <LinearLayout
@@ -52,23 +52,19 @@
 
         <com.stone.card.CardItemView
             android:layout_width="@dimen/card_image_width"
-            android:layout_height="wrap_content"
-            android:background="@drawable/back_shape" />
+            android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
             android:layout_width="@dimen/card_image_width"
-            android:layout_height="wrap_content"
-            android:background="@drawable/back_shape" />
+            android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
             android:layout_width="@dimen/card_image_width"
-            android:layout_height="wrap_content"
-            android:background="@drawable/back_shape" />
+            android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
             android:layout_width="@dimen/card_image_width"
-            android:layout_height="wrap_content"
-            android:background="@drawable/back_shape" />
+            android:layout_height="wrap_content" />
 
     </com.stone.card.CardSlidePanel>
 

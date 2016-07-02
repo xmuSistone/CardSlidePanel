@@ -5,5 +5,5 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="selection_ripple">#a5c5ccf5</color>
-    <color name="selection_mask">#8bdae0fc</color>
+    <color name="selection_mask">#8f000000</color>
 </resources>

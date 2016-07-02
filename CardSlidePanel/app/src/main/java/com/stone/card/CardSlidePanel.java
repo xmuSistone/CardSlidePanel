@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -41,8 +42,10 @@ public class CardSlidePanel extends ViewGroup {
     // 则下一层view完成向上一层view的过渡
     private View bottomLayout; // 卡片下边的三个按钮布局
 
-    private int bottomMarginTop = 40;
+    private int itemMarginTop = 10; // 卡片距离顶部的偏移量
+    private int bottomMarginTop = 40; // 底部按钮与卡片的margin值
     private int yOffsetStep = 40; // view叠加垂直偏移量的步长
+    private int mTouchSlop = 5; // 判定为滑动的阈值，单位是像素
 
     private static final int X_VEL_THRESHOLD = 900;
     private static final int X_DISTANCE_THRESHOLD = 300;
@@ -72,6 +75,7 @@ public class CardSlidePanel extends ViewGroup {
         super(context, attrs, defStyle);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.card);
 
+        itemMarginTop = (int) a.getDimension(R.styleable.card_itemMarginTop, itemMarginTop);
         bottomMarginTop = (int) a.getDimension(R.styleable.card_bottomMarginTop, bottomMarginTop);
         yOffsetStep = (int) a.getDimension(R.styleable.card_yOffsetStep, yOffsetStep);
         // 滑动相关类
@@ -83,7 +87,7 @@ public class CardSlidePanel extends ViewGroup {
         btnListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (view instanceof ImageView) {
+                if (view.getId() == R.id.maskView) {
                     // 点击的是卡片
                     if (null != cardSwitchListener && view.getScaleX() > 1 - SCALE_STEP) {
                         cardSwitchListener.onItemClick(view, isShowing);
@@ -102,8 +106,11 @@ public class CardSlidePanel extends ViewGroup {
             }
         };
 
+        ViewConfiguration configuration = ViewConfiguration.get(getContext());
+        mTouchSlop = configuration.getScaledTouchSlop();
         moveDetector = new GestureDetectorCompat(context,
                 new MoveDetector());
+        moveDetector.setIsLongpressEnabled(false);
     }
 
     @Override
@@ -125,7 +132,7 @@ public class CardSlidePanel extends ViewGroup {
                 viewItem.setCardElevation(fromShadow--);
                 viewItem.setParentView(this);
                 viewItem.setTag(i + 1);
-                viewItem.imageView.setOnClickListener(btnListener);
+                viewItem.maskView.setOnClickListener(btnListener);
                 viewList.add(viewItem);
             }
         }
@@ -145,7 +152,7 @@ public class CardSlidePanel extends ViewGroup {
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float dx,
                                 float dy) {
             // 拖动了，touch不往下传递
-            return Math.abs(dy) + Math.abs(dx) > 5;
+            return Math.abs(dy) + Math.abs(dx) > mTouchSlop;
         }
     }
 
@@ -474,7 +481,7 @@ public class CardSlidePanel extends ViewGroup {
             View viewItem = viewList.get(i);
             int childHeight = viewItem.getMeasuredHeight();
             int viewLeft = (getWidth() - viewItem.getMeasuredWidth()) / 2;
-            viewItem.layout(viewLeft, top, viewLeft + viewItem.getMeasuredWidth(), top + childHeight);
+            viewItem.layout(viewLeft, itemMarginTop, viewLeft + viewItem.getMeasuredWidth(), itemMarginTop + childHeight);
             int offset = yOffsetStep * i;
             float scale = 1 - SCALE_STEP * i;
             if (i > 2) {

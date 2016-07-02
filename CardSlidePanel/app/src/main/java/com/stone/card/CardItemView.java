@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class CardItemView extends CardView {
     private Spring springX, springY;
     public ImageView imageView;
+    public View maskView;
     private TextView userNameTv;
     private TextView imageNumTv;
     private TextView likeNumTv;
@@ -40,12 +42,17 @@ public class CardItemView extends CardView {
         super(context, attrs, defStyle);
         inflate(context, R.layout.card_item, this);
         imageView = (ImageView) findViewById(R.id.card_image_view);
+        maskView = findViewById(R.id.maskView);
         userNameTv = (TextView) findViewById(R.id.card_user_name);
         imageNumTv = (TextView) findViewById(R.id.card_pic_num);
         likeNumTv = (TextView) findViewById(R.id.card_like);
-        setClipToOutline(false);
-        setCardBackgroundColor(Color.WHITE);
-        setRadius(20);
+
+        try {
+            setCardBackgroundColor(Color.WHITE);
+            setRadius(20);
+            setClipToOutline(false);
+        } catch (Exception e) {
+        }
 
         initSpring();
     }

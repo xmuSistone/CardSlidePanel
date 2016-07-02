@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -13,6 +13,13 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/card_image_height"
             android:scaleType="fitXY" />
+
+        <View
+            android:id="@+id/maskView"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/card_image_height"
+            android:background="@drawable/back_shape"
+            android:clickable="true" />
 
         <TextView
             android:id="@+id/card_pic_num"
@@ -32,7 +39,6 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/back_shape"
         android:padding="10dp">
 
         <TextView
