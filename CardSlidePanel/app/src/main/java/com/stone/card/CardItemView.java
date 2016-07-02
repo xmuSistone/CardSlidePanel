@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
+import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringSystem;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -60,9 +61,10 @@ public class CardItemView extends CardView {
     }
 
     private void initSpring() {
+        SpringConfig springConfig = SpringConfig.fromBouncinessAndSpeed(20, 20);
         SpringSystem mSpringSystem = SpringSystem.create();
-        springX = mSpringSystem.createSpring();
-        springY = mSpringSystem.createSpring();
+        springX = mSpringSystem.createSpring().setSpringConfig(springConfig);
+        springY = mSpringSystem.createSpring().setSpringConfig(springConfig);
 
         springX.addListener(new SimpleSpringListener() {
             @Override
