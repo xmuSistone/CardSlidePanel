@@ -10,7 +10,7 @@
 
 ### 有图有真相
 <td>
-	 <img src="capture01.gif" width="290" height="485" />
+	 <img src="capture01.jpg" width="290" height="485" />
 	 <img src="capture03.gif" width="290" height="485" />
 	 <img src="capture2.gif" width="290" height="485" />
 </td>
