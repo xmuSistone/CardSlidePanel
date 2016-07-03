@@ -258,6 +258,7 @@ public class CardSlidePanel extends ViewGroup {
             int num = viewList.size();
             for (int i = num - 1; i > 0; i--) {
                 CardItemView tempView = viewList.get(i);
+                tempView.setAlpha(1);
                 tempView.bringToFront();
                 tempView.setCardElevation(shadow++);
             }
