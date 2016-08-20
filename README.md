@@ -29,11 +29,7 @@
 不信，你下载下来look看看。
 ### 使用方法
 细看代码即可知。
-####demo apk download
-[apk download](app-debug.apk) (就在thisProj工程之中)
-
-### 尾声
-有任何bug，请提issue，我会尽力去解决。也欢迎牛掰的大神们，多多pull request，我会有选择的做合并处理。
-
+####Demo安装包
+[apk download](CardSlidePanel.apk) (就在thisProj工程之中)
 ### 备注
 由于使用了CardView，导致在android 5.0以下的手机中，阴影效果很别扭，有强迫症的同学，可以废除CardView，由美工切图实现阴影效果。
