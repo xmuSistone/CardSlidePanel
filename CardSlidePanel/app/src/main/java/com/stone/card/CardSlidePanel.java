@@ -458,7 +458,9 @@ public class CardSlidePanel extends ViewGroup {
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             // ACTION_DOWN的时候就对view重新排序
-            mDragHelper.abort();
+            if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_SETTLING) {
+                mDragHelper.abort();
+            }
             orderViewStack();
 
             // 保存初次按下时arrowFlagView的Y坐标
