@@ -35,7 +35,7 @@ public class CardSlidePanel extends ViewGroup {
     private int childWith = 0; // 每一个子View对应的宽度
 
     private static final float SCALE_STEP = 0.08f; // view叠加缩放的步长
-    private static final int MAX_SLIDE_DISTANCE_LINKAGE = 400; // 水平距离+垂直距离
+    private static final int MAX_SLIDE_DISTANCE_LINKAGE = 500; // 水平距离+垂直距离
 
     // 超过这个值
     // 则下一层view完成向上一层view的过渡
@@ -46,7 +46,7 @@ public class CardSlidePanel extends ViewGroup {
     private int yOffsetStep = 40; // view叠加垂直偏移量的步长
     private int mTouchSlop = 5; // 判定为滑动的阈值，单位是像素
 
-    private static final int X_VEL_THRESHOLD = 900;
+    private static final int X_VEL_THRESHOLD = 800;
     private static final int X_DISTANCE_THRESHOLD = 300;
 
     public static final int VANISH_TYPE_LEFT = 0;
@@ -202,7 +202,7 @@ public class CardSlidePanel extends ViewGroup {
 
         @Override
         public void onViewReleased(View releasedChild, float xvel, float yvel) {
-            animToSide((CardItemView) releasedChild, xvel);
+            animToSide((CardItemView) releasedChild, (int) xvel, (int) yvel);
         }
 
         @Override
@@ -343,7 +343,7 @@ public class CardSlidePanel extends ViewGroup {
      *
      * @param xvel X方向上的滑动速度
      */
-    private void animToSide(CardItemView changedView, float xvel) {
+    private void animToSide(CardItemView changedView, int xvel, int yvel) {
         int finalX = initCenterViewX;
         int finalY = initCenterViewY;
         int flyType = -1;
@@ -355,14 +355,28 @@ public class CardSlidePanel extends ViewGroup {
             // 由于dx作为分母，此处保护处理
             dx = 1;
         }
-        if (xvel > X_VEL_THRESHOLD || dx > X_DISTANCE_THRESHOLD) {
+
+        // yvel < xvel * xyRate则允许以速度计算偏移
+        final float xyRate = 3f;
+        if (xvel > X_VEL_THRESHOLD && Math.abs(yvel) < xvel * xyRate) {
+            // x正方向的速度足够大，向右滑动消失
+            finalX = allWidth;
+            finalY = yvel * (childWith + changedView.getLeft()) / xvel + changedView.getTop();
+            flyType = VANISH_TYPE_RIGHT;
+        } else if (xvel < -X_VEL_THRESHOLD && Math.abs(yvel) < -xvel * xyRate) {
+            // x负方向的速度足够大，向左滑动消失
+            finalX = -childWith;
+            finalY = yvel * (childWith + changedView.getLeft()) / (-xvel) + changedView.getTop();
+            flyType = VANISH_TYPE_LEFT;
+        } else if (dx > X_DISTANCE_THRESHOLD && Math.abs(dy) < dx * xyRate) {
+            // x正方向的位移足够大，向右滑动消失
             finalX = allWidth;
             finalY = dy * (childWith + initCenterViewX) / dx + initCenterViewY;
             flyType = VANISH_TYPE_RIGHT;
-        } else if (xvel < -X_VEL_THRESHOLD || dx < -X_DISTANCE_THRESHOLD) {
+        } else if (dx < -X_DISTANCE_THRESHOLD && Math.abs(dy) < -dx * xyRate) {
+            // x负方向的位移足够大，向左滑动消失
             finalX = -childWith;
-            finalY = dy * (childWith + initCenterViewX) / (-dx) + dy
-                    + initCenterViewY;
+            finalY = dy * (childWith + initCenterViewX) / (-dx) + initCenterViewY;
             flyType = VANISH_TYPE_LEFT;
         }
 
@@ -401,15 +415,16 @@ public class CardSlidePanel extends ViewGroup {
             }
 
             int finalX = 0;
+            int extraVanishDistance = 100; // 为加快vanish的速度，额外添加消失的距离
             if (type == VANISH_TYPE_LEFT) {
-                finalX = -childWith;
+                finalX = -childWith - extraVanishDistance;
             } else if (type == VANISH_TYPE_RIGHT) {
-                finalX = allWidth;
+                finalX = allWidth + extraVanishDistance;
             }
 
             if (finalX != 0) {
                 releasedViewList.add(animateView);
-                if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight)) {
+                if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight / 2)) {
                     ViewCompat.postInvalidateOnAnimation(this);
                 }
             }
@@ -443,6 +458,7 @@ public class CardSlidePanel extends ViewGroup {
         int action = ev.getActionMasked();
         if (action == MotionEvent.ACTION_DOWN) {
             // ACTION_DOWN的时候就对view重新排序
+            mDragHelper.abort();
             orderViewStack();
 
             // 保存初次按下时arrowFlagView的Y坐标
@@ -515,32 +531,6 @@ public class CardSlidePanel extends ViewGroup {
     }
 
     /**
-     * 这是View的方法，该方法不支持android低版本（2.2、2.3）的操作系统，所以手动复制过来以免强制退出
-     */
-    public static int resolveSizeAndState(int size, int measureSpec,
-                                          int childMeasuredState) {
-        int result = size;
-        int specMode = MeasureSpec.getMode(measureSpec);
-        int specSize = MeasureSpec.getSize(measureSpec);
-        switch (specMode) {
-            case MeasureSpec.UNSPECIFIED:
-                result = size;
-                break;
-            case MeasureSpec.AT_MOST:
-                if (specSize < size) {
-                    result = specSize | MEASURED_STATE_TOO_SMALL;
-                } else {
-                    result = size;
-                }
-                break;
-            case MeasureSpec.EXACTLY:
-                result = specSize;
-                break;
-        }
-        return result | (childMeasuredState & MEASURED_STATE_MASK);
-    }
-
-    /**
      * 本来想写成Adapter适配，想想还是算了，这种比较简单
      *
      * @param dataList 数据
@@ -557,24 +547,6 @@ public class CardSlidePanel extends ViewGroup {
 
         if (null != cardSwitchListener) {
             cardSwitchListener.onShow(0);
-        }
-    }
-
-    /**
-     * 如果有新的数据到达，则需要填充新数据
-     * 该接口未测试，有需要的同学请自行脑补
-     *
-     * @param appendList 新数据列表
-     */
-    public void appendData(List<CardDataItem> appendList) {
-        dataList.addAll(appendList);
-
-        int currentIndex = isShowing;
-        int num = viewList.size();
-        for (int i = 0; i < num; i++) {
-            CardItemView itemView = viewList.get(i);
-            itemView.setVisibility(View.VISIBLE);
-            itemView.fillData(dataList.get(currentIndex++));
         }
     }
 
