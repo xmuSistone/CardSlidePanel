@@ -20,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         card:bottomMarginTop="60dp"
-        card:itemMarginTop="30dp"
-        card:yOffsetStep="25dp">
+        card:itemMarginTop="10dp"
+        card:yOffsetStep="26dp">
 
         <LinearLayout
             android:id="@+id/card_bottom_layout"
@@ -51,19 +51,19 @@
         </LinearLayout>
 
         <com.stone.card.CardItemView
-            android:layout_width="@dimen/card_image_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
-            android:layout_width="@dimen/card_image_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
-            android:layout_width="@dimen/card_image_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <com.stone.card.CardItemView
-            android:layout_width="@dimen/card_image_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </com.stone.card.CardSlidePanel>

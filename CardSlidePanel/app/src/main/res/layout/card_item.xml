@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/card_image_width"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp">
 
-    <RelativeLayout
+    <com.stone.card.AutoScaleRelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/top"
+        card:widthHeightRate="0.6188">
 
         <ImageView
             android:id="@+id/card_image_view"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/card_image_height"
+            android:layout_height="match_parent"
             android:scaleType="fitXY" />
 
         <View
             android:id="@+id/maskView"
             android:layout_width="fill_parent"
-            android:layout_height="@dimen/card_image_height"
+            android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true" />
 
@@ -34,17 +39,19 @@
             android:paddingRight="4dp"
             android:text="6"
             android:textColor="#fff" />
-    </RelativeLayout>
+    </com.stone.card.AutoScaleRelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="10dp">
+        android:background="@drawable/bottom"
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/card_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:text="叶琪琪 23"
             android:textColor="#111"
             android:textSize="18sp" />
@@ -54,9 +61,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_user_name"
-            android:layout_marginBottom="6dp"
-            android:layout_marginTop="6dp"
-            android:text="其它 6km"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:text="其它 6km4"
             android:textColor="#888" />
 
         <LinearLayout
@@ -81,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
                 android:drawableLeft="@drawable/card_left2"
                 android:drawablePadding="2dp"
                 android:gravity="center_horizontal"

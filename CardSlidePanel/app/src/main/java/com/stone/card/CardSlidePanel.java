@@ -25,7 +25,6 @@ import java.util.List;
 public class CardSlidePanel extends ViewGroup {
     private List<CardItemView> viewList = new ArrayList<CardItemView>(); // 存放的是每一层的view，从顶到底
     private List<View> releasedViewList = new ArrayList<View>(); // 手指松开后存放的view列表
-    private static final int shadowOrigin = 20; // view层叠的时候，在前面的shadow值一定要比后面的大
 
     /* 拖拽工具类 */
     private final ViewDragHelper mDragHelper; // 这个跟原生的ViewDragHelper差不多，我仅仅只是修改了Interpolator
@@ -119,7 +118,6 @@ public class CardSlidePanel extends ViewGroup {
         // 渲染完成，初始化卡片view列表
         viewList.clear();
         int num = getChildCount();
-        int fromShadow = shadowOrigin + num - 2;
         for (int i = num - 1; i >= 0; i--) {
             View childView = getChildAt(i);
             if (childView.getId() == R.id.card_bottom_layout) {
@@ -128,7 +126,6 @@ public class CardSlidePanel extends ViewGroup {
             } else {
                 // for循环取view的时候，是从外层往里取
                 CardItemView viewItem = (CardItemView) childView;
-                viewItem.setCardElevation(fromShadow--);
                 viewItem.setParentView(this);
                 viewItem.setTag(i + 1);
                 viewItem.maskView.setOnClickListener(btnListener);
@@ -250,8 +247,6 @@ public class CardSlidePanel extends ViewGroup {
             float scale = 1.0f - SCALE_STEP * 2;
             changedView.setScaleX(scale);
             changedView.setScaleY(scale);
-            int shadow = shadowOrigin;
-            changedView.setCardElevation(shadow++);
             changedView.setAlpha(0);
 
             // 2. 卡片View在ViewGroup中的顺次调整
@@ -260,7 +255,6 @@ public class CardSlidePanel extends ViewGroup {
                 CardItemView tempView = viewList.get(i);
                 tempView.setAlpha(1);
                 tempView.bringToFront();
-                tempView.setCardElevation(shadow++);
             }
 
             // 3. changedView填充新数据

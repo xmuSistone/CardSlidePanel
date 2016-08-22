@@ -2,12 +2,10 @@ package com.stone.card;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * @author xmuSistone
  */
 @SuppressLint("NewApi")
-public class CardItemView extends CardView {
+public class CardItemView extends FrameLayout {
     private Spring springX, springY;
     public ImageView imageView;
     public View maskView;
@@ -48,16 +46,6 @@ public class CardItemView extends CardView {
         userNameTv = (TextView) findViewById(R.id.card_user_name);
         imageNumTv = (TextView) findViewById(R.id.card_pic_num);
         likeNumTv = (TextView) findViewById(R.id.card_like);
-
-        try {
-            setCardBackgroundColor(Color.WHITE);
-            setRadius(20);
-            if (Build.VERSION.SDK_INT >= 21) {
-                setClipToOutline(false);
-            }
-        } catch (Exception e) {
-        }
-
         initSpring();
     }
 
