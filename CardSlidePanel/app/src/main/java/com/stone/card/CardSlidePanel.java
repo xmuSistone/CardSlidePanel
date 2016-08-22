@@ -340,8 +340,6 @@ public class CardSlidePanel extends ViewGroup {
 
     /**
      * 松手时处理滑动到边缘的动画
-     *
-     * @param xvel X方向上的滑动速度
      */
     private void animToSide(CardItemView changedView, int xvel, int yvel) {
         int finalX = initCenterViewX;
@@ -351,10 +349,6 @@ public class CardSlidePanel extends ViewGroup {
         // 1. 下面这一坨计算finalX和finalY，要读懂代码需要建立一个比较清晰的数学模型才能理解，不信拉倒
         int dx = changedView.getLeft() - initCenterViewX;
         int dy = changedView.getTop() - initCenterViewY;
-        if (dx == 0) {
-            // 由于dx作为分母，此处保护处理
-            dx = 1;
-        }
 
         // yvel < xvel * xyRate则允许以速度计算偏移
         final float xyRate = 3f;
@@ -534,8 +528,6 @@ public class CardSlidePanel extends ViewGroup {
 
     /**
      * 本来想写成Adapter适配，想想还是算了，这种比较简单
-     *
-     * @param dataList 数据
      */
     public void fillData(List<CardDataItem> dataList) {
         this.dataList = dataList;
@@ -554,8 +546,6 @@ public class CardSlidePanel extends ViewGroup {
 
     /**
      * 设置卡片操作回调
-     *
-     * @param cardSwitchListener 回调接口
      */
     public void setCardSwitchListener(CardSwitchListener cardSwitchListener) {
         this.cardSwitchListener = cardSwitchListener;
