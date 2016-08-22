@@ -31,5 +31,4 @@
 细看代码即可知。
 ####Demo安装包
 [apk download](CardSlidePanel.apk) (就在thisProj工程之中)
-### 备注
-由于使用了CardView，导致在android 5.0以下的手机中，阴影效果很别扭，有强迫症的同学，可以废除CardView，由美工切图实现阴影效果。
+
