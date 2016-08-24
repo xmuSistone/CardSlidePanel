@@ -3,6 +3,7 @@ package com.stone.card;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Point;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -60,6 +61,7 @@ public class CardSlidePanel extends ViewGroup {
     private boolean btnLock = false;
     private GestureDetectorCompat moveDetector;
     private OnClickListener btnListener;
+    private Point downPoint = new Point();
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -79,7 +81,7 @@ public class CardSlidePanel extends ViewGroup {
         // 滑动相关类
         mDragHelper = ViewDragHelper
                 .create(this, 10f, new DragHelperCallback());
-        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_LEFT);
+        mDragHelper.setEdgeTrackingEnabled(ViewDragHelper.EDGE_BOTTOM);
         a.recycle();
 
         btnListener = new View.OnClickListener() {
@@ -170,6 +172,7 @@ public class CardSlidePanel extends ViewGroup {
         @Override
         public boolean tryCaptureView(View child, int pointerId) {
             // 如果数据List为空，或者子View不可见，则不予处理
+
             if (child == bottomLayout || dataList == null || dataList.size() == 0
                     || child.getVisibility() != View.VISIBLE || child.getScaleX() <= 1.0f - SCALE_STEP) {
                 // 一般来讲，如果拖动的是第三层、或者第四层的View，则直接禁止
@@ -188,7 +191,7 @@ public class CardSlidePanel extends ViewGroup {
             }
 
             ((CardItemView) child).onStartDragging();
-            return true;
+            return ((CardItemView) child).shouldCapture(downPoint.x, downPoint.y);
         }
 
         @Override
@@ -436,6 +439,17 @@ public class CardSlidePanel extends ViewGroup {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        int action = ev.getActionMasked();
+        // 按下时保存坐标信息
+        if (action == MotionEvent.ACTION_DOWN) {
+            this.downPoint.x = (int) ev.getX();
+            this.downPoint.y = (int) ev.getY();
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     /* touch事件的拦截与处理都交给mDraghelper来处理 */

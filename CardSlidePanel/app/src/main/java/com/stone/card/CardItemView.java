@@ -29,6 +29,7 @@ public class CardItemView extends FrameLayout {
     private TextView imageNumTv;
     private TextView likeNumTv;
     private CardSlidePanel parentView;
+    private View topLayout, bottomLayout;
 
     public CardItemView(Context context) {
         this(context, null);
@@ -46,6 +47,8 @@ public class CardItemView extends FrameLayout {
         userNameTv = (TextView) findViewById(R.id.card_user_name);
         imageNumTv = (TextView) findViewById(R.id.card_pic_num);
         likeNumTv = (TextView) findViewById(R.id.card_like);
+        topLayout = findViewById(R.id.card_top_layout);
+        bottomLayout = findViewById(R.id.card_bottom_layout);
         initSpring();
     }
 
@@ -119,8 +122,32 @@ public class CardItemView extends FrameLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            parentView.getParent().requestDisallowInterceptTouchEvent(true);
+            // 兼容ViewPager，触点需要按在可滑动区域才行
+            boolean shouldCapture = shouldCapture((int) ev.getX(), (int) ev.getY());
+            if (shouldCapture) {
+                parentView.getParent().requestDisallowInterceptTouchEvent(true);
+            }
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 判断(x, y)是否在可滑动的矩形区域内
+     * 这个函数也被CardSlidePanel调用
+     *
+     * @param x 按下时的x坐标
+     * @param y 按下时的y坐标
+     * @return 是否在可滑动的矩形区域
+     */
+    public boolean shouldCapture(int x, int y) {
+        int captureLeft = topLayout.getLeft() + topLayout.getPaddingLeft();
+        int captureTop = topLayout.getTop() + topLayout.getPaddingTop();
+        int captureRight = bottomLayout.getRight() - bottomLayout.getPaddingRight();
+        int captureBottom = bottomLayout.getBottom() - bottomLayout.getPaddingBottom();
+
+        if (x > captureLeft && x < captureRight && y > captureTop && y < captureBottom) {
+            return true;
+        }
+        return false;
     }
 }
