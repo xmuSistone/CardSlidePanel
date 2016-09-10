@@ -297,7 +297,7 @@ public class CardSlidePanel extends ViewGroup {
         float rate = distance / (float) MAX_SLIDE_DISTANCE_LINKAGE;
 
         float rate1 = rate;
-        float rate2 = rate - 0.2f;
+        float rate2 = rate - 0.1f;
 
         if (rate > 1) {
             rate1 = 1;
