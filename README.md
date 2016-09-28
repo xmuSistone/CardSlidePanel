@@ -26,7 +26,7 @@
 * 灵活。自定义ViewGroup对卡片view的高度实现了自适应。<br>
 * 细节。卡片之间联动的视觉效果，是像素级的精确。<br>
 
-不信，你下载下来look看看。
+不信，你下载下来look look。
 ### 使用方法
 ####1. 在xml文件中引入CardSlidePanel
 ```xml
