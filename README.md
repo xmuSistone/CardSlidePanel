@@ -28,7 +28,7 @@
 
 不信，你下载下来look看看。
 ### 使用方法
-1. 在xml文件中引入CardSlidePanel
+####1. 在xml文件中引入CardSlidePanel
 ```xml
 <com.stone.card.CardSlidePanel
         android:id="@+id/image_slide_panel"
@@ -88,7 +88,7 @@
     </com.stone.card.CardSlidePanel>
 ```
 如果不想要底部的三个按钮，有两种办法：(1) 删代码，包括CardSlidePanel的一部分代码。(2)设置visibility为gone
-2. Java代码调用<br>
+####2. Java代码调用<br>
 ```java
 CardSlidePanel slidePanel = (CardSlidePanel) rootView
                 .findViewById(R.id.image_slide_panel);
@@ -111,10 +111,10 @@ CardSlidePanel slidePanel = (CardSlidePanel) rootView
         };
         slidePanel.setCardSwitchListener(cardSwitchListener);
 ```
-3. 想要定制卡片的itemView:<br>
+####3. 想要定制卡片的itemView:<br>
 请修改card_item.xml文件，可滑动区域在CardItemView.java里面做定制
 
-4.绑定卡片数据
+####4.绑定卡片数据
 在CardItemView.java
 ```java
 public void fillData(CardDataItem itemData) {
