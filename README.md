@@ -28,7 +28,102 @@
 
 不信，你下载下来look看看。
 ### 使用方法
-细看代码即可知。
+1. 在xml文件中引入CardSlidePanel
+'<com.stone.card.CardSlidePanel
+        android:id="@+id/image_slide_panel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        card:bottomMarginTop="38dp"
+        card:itemMarginTop="10dp"
+        card:yOffsetStep="26dp">
+
+        <LinearLayout
+            android:id="@+id/card_bottom_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/card_left_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:background="@drawable/ignore_button" />
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/home_button" />
+
+            <Button
+                android:id="@+id/card_right_btn"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/like_button" />
+        </LinearLayout>
+
+        <com.stone.card.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <com.stone.card.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <com.stone.card.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+        <com.stone.card.CardItemView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible" />
+
+    </com.stone.card.CardSlidePanel>
+    '
+如果不想要底部的三个按钮，有两种办法：(1) 删代码，包括CardSlidePanel的一部分代码。(2)设置visibility为gone
+2. Java代码调用<br>
+'
+CardSlidePanel slidePanel = (CardSlidePanel) rootView
+                .findViewById(R.id.image_slide_panel);
+        cardSwitchListener = new CardSwitchListener() {
+
+            @Override
+            public void onShow(int index) {
+                Log.d("CardFragment", "正在显示-" + dataList.get(index).userName);
+            }
+
+            @Override
+            public void onCardVanish(int index, int type) {
+                Log.d("CardFragment", "正在消失-" + dataList.get(index).userName + " 消失type=" + type);
+            }
+
+            @Override
+            public void onItemClick(View cardView, int index) {
+                Log.d("CardFragment", "卡片点击-" + dataList.get(index).userName);
+            }
+        };
+        slidePanel.setCardSwitchListener(cardSwitchListener);
+'
+3. 想要定制卡片的itemView:<br>
+请修改card_item.xml文件，可滑动区域在CardItemView.java里面做定制
+
+4.绑定卡片数据
+在CardItemView.java
+'
+public void fillData(CardDataItem itemData) {
+        ImageLoader.getInstance().displayImage(itemData.imagePath, imageView);
+        userNameTv.setText(itemData.userName);
+        imageNumTv.setText(itemData.imageNum + "");
+        likeNumTv.setText(itemData.likeNum + "");
+    }
+'
+
 ####Demo安装包
 [apk download](CardSlidePanel.apk) (就在thisProj工程之中)
 
