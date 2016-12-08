@@ -52,8 +52,6 @@ public class CardSlidePanel extends ViewGroup {
     public static final int VANISH_TYPE_LEFT = 0;
     public static final int VANISH_TYPE_RIGHT = 1;
 
-    private Object obj1 = new Object();
-
     private CardSwitchListener cardSwitchListener; // 回调接口
     private List<CardDataItem> dataList; // 存储的数据链表
     private int isShowing = 0; // 当前正在显示的小项
@@ -231,56 +229,54 @@ public class CardSlidePanel extends ViewGroup {
      * 对View重新排序
      */
     private void orderViewStack() {
-        synchronized (obj1) {
-            if (releasedViewList.size() == 0) {
-                return;
-            }
+        if (releasedViewList.size() == 0) {
+            return;
+        }
 
-            CardItemView changedView = (CardItemView) releasedViewList.get(0);
-            if (changedView.getLeft() == initCenterViewX) {
-                releasedViewList.remove(0);
-                return;
-            }
-
-            // 1. 消失的卡片View位置重置，由于大多手机会重新调用onLayout函数，所以此处大可以不做处理，不信你注释掉看看
-            changedView.offsetLeftAndRight(initCenterViewX
-                    - changedView.getLeft());
-            changedView.offsetTopAndBottom(initCenterViewY
-                    - changedView.getTop() + yOffsetStep * 2);
-            float scale = 1.0f - SCALE_STEP * 2;
-            changedView.setScaleX(scale);
-            changedView.setScaleY(scale);
-            changedView.setAlpha(0);
-
-            // 2. 卡片View在ViewGroup中的顺次调整
-            int num = viewList.size();
-            for (int i = num - 1; i > 0; i--) {
-                CardItemView tempView = viewList.get(i);
-                tempView.setAlpha(1);
-                tempView.bringToFront();
-            }
-
-            // 3. changedView填充新数据
-            int newIndex = isShowing + 4;
-            if (newIndex < dataList.size()) {
-                CardDataItem dataItem = dataList.get(newIndex);
-                changedView.fillData(dataItem);
-            } else {
-                changedView.setVisibility(View.INVISIBLE);
-            }
-
-            // 4. viewList中的卡片view的位次调整
-            viewList.remove(changedView);
-            viewList.add(changedView);
+        CardItemView changedView = (CardItemView) releasedViewList.get(0);
+        if (changedView.getLeft() == initCenterViewX) {
             releasedViewList.remove(0);
+            return;
+        }
 
-            // 5. 更新showIndex、接口回调
-            if (isShowing + 1 < dataList.size()) {
-                isShowing++;
-            }
-            if (null != cardSwitchListener) {
-                cardSwitchListener.onShow(isShowing);
-            }
+        // 1. 消失的卡片View位置重置，由于大多手机会重新调用onLayout函数，所以此处大可以不做处理，不信你注释掉看看
+        changedView.offsetLeftAndRight(initCenterViewX
+                - changedView.getLeft());
+        changedView.offsetTopAndBottom(initCenterViewY
+                - changedView.getTop() + yOffsetStep * 2);
+        float scale = 1.0f - SCALE_STEP * 2;
+        changedView.setScaleX(scale);
+        changedView.setScaleY(scale);
+        changedView.setAlpha(0);
+
+        // 2. 卡片View在ViewGroup中的顺次调整
+        int num = viewList.size();
+        for (int i = num - 1; i > 0; i--) {
+            CardItemView tempView = viewList.get(i);
+            tempView.setAlpha(1);
+            tempView.bringToFront();
+        }
+
+        // 3. changedView填充新数据
+        int newIndex = isShowing + 4;
+        if (newIndex < dataList.size()) {
+            CardDataItem dataItem = dataList.get(newIndex);
+            changedView.fillData(dataItem);
+        } else {
+            changedView.setVisibility(View.INVISIBLE);
+        }
+
+        // 4. viewList中的卡片view的位次调整
+        viewList.remove(changedView);
+        viewList.add(changedView);
+        releasedViewList.remove(0);
+
+        // 5. 更新showIndex、接口回调
+        if (isShowing + 1 < dataList.size()) {
+            isShowing++;
+        }
+        if (null != cardSwitchListener) {
+            cardSwitchListener.onShow(isShowing);
         }
     }
 
@@ -399,31 +395,30 @@ public class CardSlidePanel extends ViewGroup {
      * 点击按钮消失动画
      */
     private void vanishOnBtnClick(int type) {
-        synchronized (obj1) {
-            View animateView = viewList.get(0);
-            if (animateView.getVisibility() != View.VISIBLE || releasedViewList.contains(animateView)) {
-                return;
-            }
+        View animateView = viewList.get(0);
+        if (animateView.getVisibility() != View.VISIBLE || releasedViewList.contains(animateView)) {
+            return;
+        }
 
-            int finalX = 0;
-            int extraVanishDistance = 100; // 为加快vanish的速度，额外添加消失的距离
-            if (type == VANISH_TYPE_LEFT) {
-                finalX = -childWith - extraVanishDistance;
-            } else if (type == VANISH_TYPE_RIGHT) {
-                finalX = allWidth + extraVanishDistance;
-            }
+        int finalX = 0;
+        int extraVanishDistance = 100; // 为加快vanish的速度，额外添加消失的距离
+        if (type == VANISH_TYPE_LEFT) {
+            finalX = -childWith - extraVanishDistance;
+        } else if (type == VANISH_TYPE_RIGHT) {
+            finalX = allWidth + extraVanishDistance;
+        }
 
-            if (finalX != 0) {
-                releasedViewList.add(animateView);
-                if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight / 2)) {
-                    ViewCompat.postInvalidateOnAnimation(this);
-                }
-            }
-
-            if (type >= 0 && cardSwitchListener != null) {
-                cardSwitchListener.onCardVanish(isShowing, type);
+        if (finalX != 0) {
+            releasedViewList.add(animateView);
+            if (mDragHelper.smoothSlideViewTo(animateView, finalX, initCenterViewY + allHeight / 2)) {
+                ViewCompat.postInvalidateOnAnimation(this);
             }
         }
+
+        if (type >= 0 && cardSwitchListener != null) {
+            cardSwitchListener.onCardVanish(isShowing, type);
+        }
+
     }
 
     @Override
@@ -432,11 +427,9 @@ public class CardSlidePanel extends ViewGroup {
             ViewCompat.postInvalidateOnAnimation(this);
         } else {
             // 动画结束
-            synchronized (this) {
-                if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
-                    orderViewStack();
-                    btnLock = false;
-                }
+            if (mDragHelper.getViewDragState() == ViewDragHelper.STATE_IDLE) {
+                orderViewStack();
+                btnLock = false;
             }
         }
     }
