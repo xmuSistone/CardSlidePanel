@@ -189,7 +189,11 @@ public class CardSlidePanel extends ViewGroup {
             }
 
             ((CardItemView) child).onStartDragging();
-            return ((CardItemView) child).shouldCapture(downPoint.x, downPoint.y);
+            boolean shouldCapture = ((CardItemView) child).shouldCapture(downPoint.x, downPoint.y);
+            if (shouldCapture) {
+                getParent().requestDisallowInterceptTouchEvent(shouldCapture);
+            }
+            return shouldCapture;
         }
 
         @Override

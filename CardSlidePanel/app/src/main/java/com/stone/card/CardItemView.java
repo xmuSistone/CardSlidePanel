@@ -3,7 +3,6 @@ package com.stone.card;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -117,18 +116,6 @@ public class CardItemView extends FrameLayout {
     public void onStartDragging() {
         springX.setAtRest();
         springY.setAtRest();
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            // 兼容ViewPager，触点需要按在可滑动区域才行
-            boolean shouldCapture = shouldCapture((int) ev.getX(), (int) ev.getY());
-            if (shouldCapture) {
-                parentView.getParent().requestDisallowInterceptTouchEvent(true);
-            }
-        }
-        return super.dispatchTouchEvent(ev);
     }
 
     /**
