@@ -140,10 +140,10 @@ public class CardItemView extends FrameLayout {
      * @return 是否在可滑动的矩形区域
      */
     public boolean shouldCapture(int x, int y) {
-        int captureLeft = topLayout.getLeft() + topLayout.getPaddingLeft();
-        int captureTop = topLayout.getTop() + topLayout.getPaddingTop();
-        int captureRight = bottomLayout.getRight() - bottomLayout.getPaddingRight();
-        int captureBottom = bottomLayout.getBottom() - bottomLayout.getPaddingBottom();
+        int captureLeft = getLeft() + topLayout.getPaddingLeft();
+        int captureTop = getTop() + topLayout.getTop() + topLayout.getPaddingTop();
+        int captureRight = getRight() - bottomLayout.getPaddingRight();
+        int captureBottom = getBottom() - getPaddingBottom() - bottomLayout.getPaddingBottom();
 
         if (x > captureLeft && x < captureRight && y > captureTop && y < captureBottom) {
             return true;
