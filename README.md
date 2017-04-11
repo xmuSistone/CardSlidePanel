@@ -1,9 +1,8 @@
 
 ### 有图有真相
+模仿探探首页的卡片滑动效果：
 <td>
 	 <img src="capture4.jpg" width="880" height="676" /><br>
-	 <img src="capture03.gif" width="435" height="740" />
-	 <img src="capture2.gif" width="435" height="740" />
 </td>
 
 ### 正经一点
