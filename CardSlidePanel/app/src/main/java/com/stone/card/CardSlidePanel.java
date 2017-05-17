@@ -513,6 +513,7 @@ public class CardSlidePanel extends ViewGroup {
                 scale = 1 - SCALE_STEP * 2;
             }
 
+            viewItem.setPivotY(viewItem.getMeasuredHeight());
             viewItem.offsetTopAndBottom(offset);
             viewItem.setScaleX(scale);
             viewItem.setScaleY(scale);

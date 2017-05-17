@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         card:bottomMarginTop="38dp"
         card:itemMarginTop="10dp"
-        card:yOffsetStep="26dp">
+        card:yOffsetStep="12dp">
 
         <LinearLayout
             android:id="@+id/card_bottom_layout"
