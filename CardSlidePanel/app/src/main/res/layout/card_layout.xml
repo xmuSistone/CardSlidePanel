@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card="http://schemas.android.com/apk/res/com.stone.card"
+    xmlns:card="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fff"
@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         card:bottomMarginTop="38dp"
         card:itemMarginTop="10dp"
-        card:yOffsetStep="12dp">
+        card:yOffsetStep="13dp">
 
         <LinearLayout
             android:id="@+id/card_bottom_layout"
