@@ -1,18 +1,18 @@
-package com.stone.card;
+package com.stone.card.library;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.rebound.SimpleSpringListener;
 import com.facebook.rebound.Spring;
 import com.facebook.rebound.SpringConfig;
 import com.facebook.rebound.SpringSystem;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * 卡片View项
@@ -21,14 +21,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 @SuppressLint("NewApi")
 public class CardItemView extends FrameLayout {
+
     private Spring springX, springY;
-    public ImageView imageView;
-    public View maskView;
-    private TextView userNameTv;
-    private TextView imageNumTv;
-    private TextView likeNumTv;
     private CardSlidePanel parentView;
-    private View topLayout, bottomLayout;
 
     public CardItemView(Context context) {
         this(context, null);
@@ -40,14 +35,6 @@ public class CardItemView extends FrameLayout {
 
     public CardItemView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        inflate(context, R.layout.card_item, this);
-        imageView = (ImageView) findViewById(R.id.card_image_view);
-        maskView = findViewById(R.id.maskView);
-        userNameTv = (TextView) findViewById(R.id.card_user_name);
-        imageNumTv = (TextView) findViewById(R.id.card_pic_num);
-        likeNumTv = (TextView) findViewById(R.id.card_like);
-        topLayout = findViewById(R.id.card_top_layout);
-        bottomLayout = findViewById(R.id.card_bottom_layout);
         initSpring();
     }
 
@@ -75,14 +62,6 @@ public class CardItemView extends FrameLayout {
             }
         });
     }
-
-    public void fillData(CardDataItem itemData) {
-        ImageLoader.getInstance().displayImage(itemData.imagePath, imageView);
-        userNameTv.setText(itemData.userName);
-        imageNumTv.setText(itemData.imageNum + "");
-        likeNumTv.setText(itemData.likeNum + "");
-    }
-
 
     /**
      * 动画移动到某个位置
@@ -118,6 +97,12 @@ public class CardItemView extends FrameLayout {
         springY.setAtRest();
     }
 
+    public void bindLayoutResId(int layoutResId) {
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View view = inflater.inflate(layoutResId, null);
+        addView(view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+    }
+
     /**
      * 判断(x, y)是否在可滑动的矩形区域内
      * 这个函数也被CardSlidePanel调用
@@ -127,14 +112,7 @@ public class CardItemView extends FrameLayout {
      * @return 是否在可滑动的矩形区域
      */
     public boolean shouldCapture(int x, int y) {
-        int captureLeft = getLeft() + topLayout.getPaddingLeft();
-        int captureTop = getTop() + topLayout.getTop() + topLayout.getPaddingTop();
-        int captureRight = getRight() - bottomLayout.getPaddingRight();
-        int captureBottom = getBottom() - getPaddingBottom() - bottomLayout.getPaddingBottom();
-
-        if (x > captureLeft && x < captureRight && y > captureTop && y < captureBottom) {
-            return true;
-        }
-        return false;
+        return true;
     }
+
 }

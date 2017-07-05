@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:paddingRight="5dp"
+    tools:context=".MainActivity">
 
-    <com.stone.card.AutoScaleRelativeLayout
+    <RelativeLayout
         android:id="@+id/card_top_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/top"
-        card:widthHeightRate="0.6588">
+        android:layout_height="230dp"
+        android:background="@drawable/top">
 
         <ImageView
             android:id="@+id/card_image_view"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY" />
+            android:scaleType="centerCrop" />
 
         <View
             android:id="@+id/maskView"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?android:attr/selectableItemBackground"
             android:clickable="true" />
@@ -40,7 +40,7 @@
             android:paddingRight="4dp"
             android:text="6"
             android:textColor="#fff" />
-    </com.stone.card.AutoScaleRelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/card_bottom_layout"
@@ -63,9 +63,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/card_user_name"
-            android:paddingBottom="16dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
+            android:paddingBottom="16dp"
             android:text="其它 6km4"
             android:textColor="#888" />
 
