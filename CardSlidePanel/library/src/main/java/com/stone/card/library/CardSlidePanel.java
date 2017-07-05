@@ -525,6 +525,9 @@ public class CardSlidePanel extends ViewGroup {
                     View itemView = viewList.get(i);
                     if (itemView.getVisibility() == View.VISIBLE) {
                         continue;
+                    } else if (i == 0) {
+                        isShowing++;
+                        cardSwitchListener.onShow(isShowing);
                     }
                     itemView.setVisibility(View.VISIBLE);
                     if (i == VIEW_COUNT - 1) {

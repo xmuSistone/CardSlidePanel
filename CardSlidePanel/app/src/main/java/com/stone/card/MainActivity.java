@@ -89,6 +89,7 @@ public class MainActivity extends FragmentActivity {
         });
 
 
+        // 3. notifyDataSetChanged调用
         findViewById(R.id.notify_change).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
