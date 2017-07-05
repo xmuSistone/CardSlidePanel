@@ -96,13 +96,11 @@ public class MainActivity extends FragmentActivity {
                 slidePanel.getAdapter().notifyDataSetChanged();
             }
         });
-
-
     }
 
     private void prepareDataList() {
         int num = imagePaths.length;
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < num; i++) {
             CardDataItem dataItem = new CardDataItem();
             dataItem.userName = names[i];
             dataItem.imagePath = imagePaths[i];
