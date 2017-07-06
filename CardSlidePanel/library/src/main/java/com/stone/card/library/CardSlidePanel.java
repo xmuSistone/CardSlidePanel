@@ -535,17 +535,21 @@ public class CardSlidePanel extends ViewGroup {
         adapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
+
+                int delay = 0;
                 for (int i = 0; i < VIEW_COUNT; i++) {
-                    View itemView = viewList.get(i);
+                    CardItemView itemView = viewList.get(i);
                     if (itemView.getVisibility() == View.VISIBLE) {
                         continue;
                     } else if (i == 0) {
                         isShowing++;
                         cardSwitchListener.onShow(isShowing);
                     }
-                    itemView.setVisibility(View.VISIBLE);
                     if (i == VIEW_COUNT - 1) {
                         itemView.setAlpha(0);
+                        itemView.setVisibility(View.VISIBLE);
+                    } else {
+                        itemView.setVisibilityWithAnimation(View.VISIBLE, delay++);
                     }
                     adapter.bindView(itemView, isShowing + i);
                 }
