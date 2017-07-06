@@ -2,6 +2,7 @@ package com.stone.card.library;
 
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
+import android.graphics.Rect;
 import android.view.View;
 
 /**
@@ -28,8 +29,13 @@ public abstract class CardAdapter {
     public abstract void bindView(View view, int index);
 
 
-    public boolean shouldCapture(int posX, int posY) {
-        return true;
+    /**
+     * 可滑动区域定制
+     *
+     * @param view 拖动的View
+     */
+    public Rect obtainDraggableArea(View view) {
+        return null;
     }
 
 

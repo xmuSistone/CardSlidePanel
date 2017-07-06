@@ -1,12 +1,12 @@
 package com.stone.card.library;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.facebook.rebound.SimpleSpringListener;
@@ -24,6 +24,7 @@ public class CardItemView extends FrameLayout {
 
     private Spring springX, springY;
     private CardSlidePanel parentView;
+    private ObjectAnimator alphaAnimator;
 
     public CardItemView(Context context) {
         this(context, null);
@@ -103,16 +104,19 @@ public class CardItemView extends FrameLayout {
         addView(view, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     }
 
-    /**
-     * 判断(x, y)是否在可滑动的矩形区域内
-     * 这个函数也被CardSlidePanel调用
-     *
-     * @param x 按下时的x坐标
-     * @param y 按下时的y坐标
-     * @return 是否在可滑动的矩形区域
-     */
-    public boolean shouldCapture(int x, int y) {
-        return true;
-    }
+    @Override
+    public void setVisibility(int visibility) {
+        if (visibility == View.VISIBLE && getVisibility() != View.VISIBLE) {
+            if (null != alphaAnimator) {
+                alphaAnimator.cancel();
+            }
 
+            alphaAnimator = ObjectAnimator.ofFloat(this, "alpha",
+                    0.0f, 1.0f);
+            alphaAnimator.setDuration(500);
+            alphaAnimator.start();
+        }
+
+        super.setVisibility(visibility);
+    }
 }

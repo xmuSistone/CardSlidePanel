@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -57,6 +58,7 @@ public class CardSlidePanel extends ViewGroup {
     private Point downPoint = new Point();
     private CardAdapter adapter;
     private static final int VIEW_COUNT = 4;
+    private Rect draggableArea;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -167,14 +169,26 @@ public class CardSlidePanel extends ViewGroup {
                 return false;
             }
 
-            // 只捕获顶部view(rotation=0)
+            // 1. 只有顶部的View才允许滑动
             int childIndex = viewList.indexOf(child);
             if (childIndex > 0) {
                 return false;
             }
 
+            // 2. 获取可滑动区域
             ((CardItemView) child).onStartDragging();
-            boolean shouldCapture = ((CardItemView) child).shouldCapture(downPoint.x, downPoint.y);
+            if (draggableArea == null) {
+                draggableArea = adapter.obtainDraggableArea(child);
+            }
+
+
+            // 3. 判断是否可滑动
+            boolean shouldCapture = true;
+            if (null != draggableArea) {
+                shouldCapture = draggableArea.contains(downPoint.x, downPoint.y);
+            }
+
+            // 4. 如果确定要滑动，就让touch事件交给自己消费
             if (shouldCapture) {
                 getParent().requestDisallowInterceptTouchEvent(shouldCapture);
             }
