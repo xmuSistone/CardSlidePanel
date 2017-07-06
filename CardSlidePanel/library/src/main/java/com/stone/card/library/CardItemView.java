@@ -106,16 +106,18 @@ public class CardItemView extends FrameLayout {
 
     public void setVisibilityWithAnimation(final int visibility, int delayIndex) {
         if (visibility == View.VISIBLE && getVisibility() != View.VISIBLE) {
+            setAlpha(0);
+            setVisibility(visibility);
 
             if (null != alphaAnimator) {
+                alphaAnimator.pause();
                 alphaAnimator.cancel();
             }
             alphaAnimator = ObjectAnimator.ofFloat(this, "alpha",
                     0.0f, 1.0f);
-            alphaAnimator.setDuration(500);
+            alphaAnimator.setDuration(300);
+            alphaAnimator.setStartDelay(delayIndex * 100);
             alphaAnimator.start();
-            alphaAnimator.setStartDelay(delayIndex * 200);
-            setVisibility(visibility);
         }
     }
 }

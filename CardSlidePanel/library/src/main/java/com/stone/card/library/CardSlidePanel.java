@@ -535,7 +535,7 @@ public class CardSlidePanel extends ViewGroup {
         adapter.registerDataSetObserver(new DataSetObserver() {
             @Override
             public void onChanged() {
-
+                orderViewStack();
                 int delay = 0;
                 for (int i = 0; i < VIEW_COUNT; i++) {
                     CardItemView itemView = viewList.get(i);
