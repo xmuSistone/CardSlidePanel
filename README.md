@@ -46,26 +46,26 @@ slidePanel.setCardSwitchListener(cardSwitchListener);
 slidePanel.setAdapter(new CardAdapter() {
         @Override
         public int getLayoutId() {
-            return R.layout.card_item;
+            // layout文件
+            return R.layout.card_item;
         }
 
         @Override
         public int getCount() {
-            return dataList.size();
+            // 卡片个数
+            return dataList.size();
         }
+        
+        @Override
+        public Rect obtainDraggableArea(View view) {
+            // 可滑动区域定制，仅调用一次
+            return new Rect(....)
+        }
 
         @Override
         public void bindView(View view, int index) {
-            Object tag = view.getTag();
-            ViewHolder viewHolder;
-            if (null != tag) {
-                viewHolder = (ViewHolder) tag;
-            } else {
-                viewHolder = new ViewHolder(view);
-                view.setTag(viewHolder);
-            }
-
-            viewHolder.bindData(dataList.get(index));
+            // 数据绑定，参看demo
+            viewHolder.bindData(dataList.get(index));
         }
 });
 ```
