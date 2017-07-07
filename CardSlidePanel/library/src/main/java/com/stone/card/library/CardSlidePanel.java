@@ -253,12 +253,9 @@ public class CardSlidePanel extends ViewGroup {
         changedView.setAlpha(0);
 
         // 2. 卡片View在ViewGroup中的顺次调整
-        int num = viewList.size();
-        for (int i = num - 1; i > 0; i--) {
-            CardItemView tempView = viewList.get(i);
-            tempView.setAlpha(1);
-            tempView.bringToFront();
-        }
+        LayoutParams lp = changedView.getLayoutParams();
+        removeViewInLayout(changedView);
+        addViewInLayout(changedView, 0, lp, true);
 
         // 3. changedView填充新数据
         int newIndex = isShowing + 4;
