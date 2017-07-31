@@ -536,21 +536,26 @@ public class CardSlidePanel extends ViewGroup {
                 int delay = 0;
                 for (int i = 0; i < VIEW_COUNT; i++) {
                     CardItemView itemView = viewList.get(i);
-                    if (itemView.getVisibility() == View.VISIBLE) {
-                        continue;
-                    } else if (i == 0) {
-                        if (isShowing > 0) {
-                            isShowing++;
+                    if (i < adapter.getCount()) {
+                        if (itemView.getVisibility() == View.VISIBLE) {
+                            continue;
+                        } else if (i == 0) {
+                            if (isShowing > 0) {
+                                isShowing++;
+                            }
+                            cardSwitchListener.onShow(isShowing);
                         }
-                        cardSwitchListener.onShow(isShowing);
+                        if (i == VIEW_COUNT - 1) {
+                            itemView.setAlpha(0);
+                            itemView.setVisibility(View.VISIBLE);
+                        } else {
+                            itemView.setVisibilityWithAnimation(View.VISIBLE, delay++);
+                        }
+                        adapter.bindView(itemView, isShowing + i);
                     }
-                    if (i == VIEW_COUNT - 1) {
-                        itemView.setAlpha(0);
-                        itemView.setVisibility(View.VISIBLE);
-                    } else {
-                        itemView.setVisibilityWithAnimation(View.VISIBLE, delay++);
+                    else {
+                        itemView.setVisibility(View.INVISIBLE);
                     }
-                    adapter.bindView(itemView, isShowing + i);
                 }
             }
         });
