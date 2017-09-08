@@ -28,6 +28,11 @@ public abstract class CardAdapter {
      */
     public abstract void bindView(View view, int index);
 
+    /**
+     * 获取数据用
+     */
+    public abstract Object getItem(int index);
+
 
     /**
      * 可滑动区域定制
@@ -37,7 +42,6 @@ public abstract class CardAdapter {
     public Rect obtainDraggableArea(View view) {
         return null;
     }
-
 
     public void registerDataSetObserver(DataSetObserver observer) {
         mDataSetObservable.registerObserver(observer);

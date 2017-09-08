@@ -17,6 +17,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class CardSlidePanel extends ViewGroup {
     private CardAdapter adapter;
     private static final int VIEW_COUNT = 4;
     private Rect draggableArea;
+    private WeakReference<Object> savedFirstItemData;
 
     public CardSlidePanel(Context context) {
         this(context, null);
@@ -126,6 +128,9 @@ public class CardSlidePanel extends ViewGroup {
         for (int i = 0; i < VIEW_COUNT; i++) {
             if (i < count) {
                 adapter.bindView(viewList.get(i), i);
+                if (i == 0) {
+                    savedFirstItemData = new WeakReference<>(adapter.getItem(i));
+                }
             } else {
                 viewList.get(i).setVisibility(View.INVISIBLE);
             }
@@ -533,12 +538,33 @@ public class CardSlidePanel extends ViewGroup {
             @Override
             public void onChanged() {
                 orderViewStack();
+
+                boolean reset = false;
+                if (adapter.getCount() > 0) {
+                    Object firstObj = adapter.getItem(0);
+                    if (null == savedFirstItemData) {
+                        // 此前就没有数据，需要保存第一条数据
+                        savedFirstItemData = new WeakReference<>(firstObj);
+                        isShowing = 0;
+                    } else {
+                        Object savedObj = savedFirstItemData.get();
+                        if (firstObj != savedObj) {
+                            // 如果第一条数据不等的话，需要重置
+                            isShowing = 0;
+                            reset = true;
+                            savedFirstItemData = new WeakReference<>(firstObj);
+                        }
+                    }
+                }
+
                 int delay = 0;
                 for (int i = 0; i < VIEW_COUNT; i++) {
                     CardItemView itemView = viewList.get(i);
                     if (i < adapter.getCount()) {
                         if (itemView.getVisibility() == View.VISIBLE) {
-                            continue;
+                            if (!reset) {
+                                continue;
+                            }
                         } else if (i == 0) {
                             if (isShowing > 0) {
                                 isShowing++;
@@ -552,8 +578,7 @@ public class CardSlidePanel extends ViewGroup {
                             itemView.setVisibilityWithAnimation(View.VISIBLE, delay++);
                         }
                         adapter.bindView(itemView, isShowing + i);
-                    }
-                    else {
+                    } else {
                         itemView.setVisibility(View.INVISIBLE);
                     }
                 }

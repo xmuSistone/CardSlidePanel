@@ -2,6 +2,7 @@ package com.stone.card;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -62,7 +63,6 @@ public class MainActivity extends FragmentActivity {
 
 
         // 2. 绑定Adapter
-        prepareDataList();
         slidePanel.setAdapter(new CardAdapter() {
             @Override
             public int getLayoutId() {
@@ -89,6 +89,11 @@ public class MainActivity extends FragmentActivity {
             }
 
             @Override
+            public Object getItem(int index) {
+                return dataList.get(index);
+            }
+
+            @Override
             public Rect obtainDraggableArea(View view) {
                 // 可滑动区域定制，该函数只会调用一次
                 View contentView = view.findViewById(R.id.card_item_content);
@@ -103,6 +108,15 @@ public class MainActivity extends FragmentActivity {
         });
 
 
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                prepareDataList();
+                slidePanel.getAdapter().notifyDataSetChanged();
+            }
+        }, 500);
+
         // 3. notifyDataSetChanged调用
         findViewById(R.id.notify_change).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,8 +128,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void prepareDataList() {
-        int num = imagePaths.length;
-        for (int i = 0; i < num; i++) {
+        for (int i = 0; i < 6; i++) {
             CardDataItem dataItem = new CardDataItem();
             dataItem.userName = names[i];
             dataItem.imagePath = imagePaths[i];
